@@ -1,8 +1,10 @@
-import { Args } from '@massalabs/as-types';
+import { Args, stringToBytes, u32ToBytes, bytesToU32} from '@massalabs/as-types';
 import { Storage, setDeployContext, generateEvent } from '@massalabs/massa-as-sdk';
 import { 
-    // increment, 
-    initialize, getCount, constructor } from '../contracts/counter';
+    increment, 
+    initialize, 
+    getCount,
+     constructor } from '../contracts/counter';
 
 describe('Counter unit tests', () => {
   beforeAll(() => {
@@ -24,24 +26,18 @@ describe('Counter unit tests', () => {
   });
 
   test('getCount function should gets the count', () => {
-    Storage.set("count", "15");
-    const countStr: string = getCount(); 
-    expect(countStr).toBe("15");
+    Storage.set("count", "10");    
+    const countStr = Storage.get("count"); 
+    const countBytes : StaticArray<u8> = stringToBytes(countStr);
+    const getCountResult = getCount();
+    expect(countBytes).toStrictEqual(getCountResult);
   });
 
-
-//   Helper function to serialize a number to StaticArray<u8> for testing
-function serializeU32(n: u32): StaticArray<u8> {
-    const args = new Args();
-    args.add(n);
-    return args.serialize();
-}
-
-//   test('increment', () => {
-//     const count = Storage.get("count");
-//     increment(serializeU32(5));
-//     const newCount = Storage.get("count");
-//     expect(newCount).toBe(count + 5);
-//   });
-
+  test('increment', () => {
+    const incrementValueU32 : u32 = 65;
+    const incrementValueBytes : StaticArray<u8> = u32ToBytes(incrementValueU32);
+    const finalCountBytes : StaticArray<u8> = increment(incrementValueBytes); 
+    let finalCountU32 : u32 = new Args(finalCountBytes).nextU32().expect('finalCountBytes argument is missing or invalid');
+    expect(finalCountU32).toStrictEqual(incrementValueU32);
+  });
 });

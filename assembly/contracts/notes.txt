@@ -12,3 +12,10 @@
 ### bonus task:
 
 - write unit tests
+
+
+
+
+
+Questions: 
+1. console.log()
