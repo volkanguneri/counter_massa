@@ -3,26 +3,24 @@ import React from "react";
 import Head from "next/head";
 import "./globals.css";
 import styles from './styles/Home.module.css';
+import IncrementCounter from "./components/IncrementCounter";
 
 export default function Home() {
 return (
   <div className={styles.container}>
     <Head>
       <title>Create Next App</title>
-      <link rel="icon" href="/favicon.ico" />
+      {/* <link rel="icon" href="/favicon.ico" /> 
+      CREATE ICON 
+      */}
     </Head>
 
     <main>
       <h1 className={styles.title}>
         Counter
       </h1>
-
-      <p className={styles.description}>
-        Get started by editing <code>pages/index.js</code>
-      </p>
-
       <div className={styles.grid}>
-        
+      <IncrementCounter/>
       </div>
     </main>
 
