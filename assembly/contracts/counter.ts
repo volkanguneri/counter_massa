@@ -22,7 +22,7 @@ export function getCount(): StaticArray<u8> {
 export function increment(n: StaticArray<u8>): StaticArray<u8> {
   // Deserialize the argument as an u32 number
   const incrementValue : u32 = new Args(n).nextU32().expect('n argument is missing or invalid');
-  const countBytes : StaticArray<u8> = getCount();
+  const countBytes : StaticArray<u8> = getCount(); // countBytes argument missing or invalid
   
   let countU32 : u32 = new Args(countBytes).nextU32().expect('countBytes argument is missing or invalid');
   const newCount : u32 = countU32 += incrementValue;

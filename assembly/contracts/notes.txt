@@ -19,3 +19,14 @@
 
 Questions: 
 1. console.log()
+2. crete icon for next
+
+
+
+
+
+// UNCOMMENT TO BE ISPIRED BY
+  const args = new Args(n);
+    const name = args.nextString().expect('Name argument is missing or invalid');
+    const age = args.nextU8().expect('Age argument is missing or invalid');
+    return strToBytes(`Hello ${name}! ich bin ${age.toString()} jahre`)
