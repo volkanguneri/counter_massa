@@ -1,0 +1,35 @@
+### expected features:
+
+1. **Increment Counter**
+    - Create a function that increments the counter by a specified number `n` passed as an argument using `Args` object.
+    - Emit an event when counter is incremented
+    - This function is meant to be called from frontend
+2. **Read Counter Value**
+    - Create a function that reads the current value of the counter.
+3. **Reset counter**
+    - Reset the counter value to 0. This function is meant to be called from the backend
+
+### bonus task:
+
+- write unit tests
+
+
+
+
+
+Questions: 
+1. console.log()
+2. y a pas de blockchain local? 
+
+ToDO
+1. crete icon for next
+
+
+// UNCOMMENT TO BE ISPIRED BY
+  const args = new Args(n);
+    const name = args.nextString().expect('Name argument is missing or invalid');
+    const age = args.nextU8().expect('Age argument is missing or invalid');
+    return strToBytes(`Hello ${name}! ich bin ${age.toString()} jahre`)
+
+
+contract deployed to: AS128meaUmpiRsSUr1AtW2G6xC7LCGAAFzuif3dJAmUd1igreAakc

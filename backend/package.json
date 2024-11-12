@@ -49,6 +49,7 @@
         "node": ">=16"
     },
     "dependencies": {
+        "@massalabs/wallet-provider": "^3.0.0",
         "as-bignum": "^0.3.1"
     }
 }
