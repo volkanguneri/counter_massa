@@ -25,7 +25,7 @@ describe('Counter unit tests', () => {
     expect(countStr).toBe("0");
   });
 
-  test('getCount function should gets the count', () => {
+  test('getCount function should get the count', () => {
     Storage.set("count", "10");    
     const countStr = Storage.get("count"); 
     const countBytes : StaticArray<u8> = stringToBytes(countStr);

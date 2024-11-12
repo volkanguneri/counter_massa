@@ -2,7 +2,7 @@
   "extends": "assemblyscript/std/assembly.json",
   "include": [
     "**/*.ts"
-  ],
+, "../backend/assembly/contracts/counter.ts", "__tests__/counter-test.spec.ts"  ],
   "typedocOptions": {
     "exclude": "assembly/**/__tests__",
     "excludePrivate": true,
