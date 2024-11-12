@@ -19,15 +19,15 @@ export function getCount(): StaticArray<u8> {
   return countBytes;
 }
 
-export function increment(n: StaticArray<u8>): StaticArray<u8> {
-  // Deserialize the argument as an u32 number
-  const incrementValue : u32 = new Args(n).nextU32().expect('n argument is missing or invalid');
-  const countBytes : StaticArray<u8> = getCount();
+// export function increment(n: StaticArray<u8>): StaticArray<u8> {
+//   // Deserialize the argument as an u32 number
+//   const incrementValue : u32 = new Args(n).nextU32().expect('n argument is missing or invalid');
+//   const countBytes : StaticArray<u8> = getCount();
   
-  let countU32 : u32 = new Args(countBytes).nextU32().expect('countBytes argument is missing or invalid');
-  const newCount : u32 = countU32 += incrementValue;
-  Storage.set("count", newCount.toString());
-  generateEvent(`Counter incremented by ${incrementValue}. New value: ${newCount}`);
-  const newCountBytes : StaticArray<u8> = u32ToBytes(newCount);
-  return newCountBytes;
-}
+//   let countU32 : u32 = new Args(countBytes).nextU32().expect('countBytes argument is missing or invalid');
+//   const newCount : u32 = countU32 += incrementValue;
+//   Storage.set("count", newCount.toString());
+//   generateEvent(`Counter incremented by ${incrementValue}. New value: ${newCount}`);
+//   const newCountBytes : StaticArray<u8> = u32ToBytes(newCount);
+//   return newCountBytes;
+// }
