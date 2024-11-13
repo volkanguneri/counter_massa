@@ -20,6 +20,7 @@
     "author": "",
     "license": "ISC",
     "devDependencies": {
+        "@as-pect/assembly": "^8.1.0",
         "@as-pect/cli": "^8.1.0",
         "@assemblyscript/loader": "^0.27.29",
         "@massalabs/as-types": "^2.0.0",
@@ -49,6 +50,7 @@
         "node": ">=16"
     },
     "dependencies": {
+        "@massalabs/react-ui-kit": "^1.0.0",
         "@massalabs/wallet-provider": "^3.0.0",
         "as-bignum": "^0.3.1"
     }
