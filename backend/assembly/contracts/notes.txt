@@ -19,3 +19,26 @@
 
 Questions: 
 1. console.log()
+
+
+
+// // Store.set(COUNT_KEY, u8ToBytes(count))
+// // count = Store.get(COUNT_KEY) + increment
+// // const COUNT_KEY = stringToBytes('count');
+
+// // :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+// // export const TOTAL_SUPPLY_KEY = stringToBytes('TOTAL_SUPPLY');
+// // ...
+// // const totalSupply = args
+// //     .nextU256()
+// //     .expect('Error while initializing totalSupply');
+// // Storage.set(TOTAL_SUPPLY_KEY, u256ToBytes(totalSupply));
+// // ...
+// // export function totalSupply(_: StaticArray<u8>): StaticArray<u8> {
+// //   return Storage.get(TOTAL_SUPPLY_KEY);
+// // }
+
+
+
+// // let countU8: u8 = u8(i8.parse(countStr));

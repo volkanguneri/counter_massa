@@ -1,4 +1,4 @@
-import { Args, stringToBytes, u32ToBytes, bytesToU32 } from '@massalabs/as-types';
+import { Args, stringToBytes, u8toByte, byteToU8 } from '@massalabs/as-types';
 import { Storage, setDeployContext, generateEvent } from '@massalabs/massa-as-sdk';
 import {
   increment,
@@ -14,33 +14,39 @@ describe('Counter unit tests', () => {
     constructor();
   });
 
+  // // Global variables
+  // const countKey = stringToBytes('count');
+  // const count : StaticArray<u8> = Storage.get(countKey);
+
   test('Initial count should be 0', () => {
-    const countStr: string = Storage.get("count");
-    expect(countStr).toBe("0");
+    const countKey = stringToBytes('count');
+    const count : StaticArray<u8> = Storage.get(countKey);
+    expect(count).toStrictEqual(u8toByte(0));
   });
 
   test('Initialize function should initialize the counter', () => {
-    Storage.set("count", "10");
+    const countKey = stringToBytes('count');
+    Storage.set(countKey, u8toByte(10));
     initialize();
-    const countStr: string = Storage.get("count");
-    expect(countStr).toBe("0");
+    const count : StaticArray<u8> = Storage.get(countKey);
+    expect(count).toStrictEqual(u8toByte(0));
   });
 
   test('getCount function should get the count', () => {
-    Storage.set("count", "10");
-    const countStr: string = Storage.get("count");
-    const countBytes: StaticArray<u8> = stringToBytes(countStr);
+    initialize();
+    const countKey = stringToBytes('count');
+    Storage.set(countKey, u8toByte(11));
+    const count: StaticArray<u8> = Storage.get(countKey);
     const getCountResult = getCount();
-    expect(countBytes).toStrictEqual(getCountResult);
+    expect(count).toStrictEqual(getCountResult);
   });
 
   test('increment should increment the count', () => {
-    Storage.set("count", "0");
-    const incrementValueU32: u32 = 65;
-    const incrementValueBytes: StaticArray<u8> = u32ToBytes(incrementValueU32);
+    initialize();
+    const incrementValueU8: u8 = 111;
+    const incrementValueBytes: StaticArray<u8> = u8toByte(incrementValueU8);
     const finalCountBytes: StaticArray<u8> = increment(incrementValueBytes);
-    const finalCountU32: u32 = new Args(finalCountBytes).nextU32()
-      .expect('finalCountBytes argument is missing or invalid');
-    expect(finalCountU32).toStrictEqual(incrementValueU32);
+    const finalCountU8 = byteToU8(finalCountBytes);
+    expect(finalCountU8).toStrictEqual(incrementValueU8);
   });
 });
