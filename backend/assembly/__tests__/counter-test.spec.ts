@@ -1,4 +1,4 @@
-import { Args, stringToBytes, u8toByte, byteToU8 } from '@massalabs/as-types';
+import { Args, stringToBytes, u64ToBytes, bytesToU64 } from '@massalabs/as-types';
 import { Storage, setDeployContext, generateEvent } from '@massalabs/massa-as-sdk';
 import {
   increment,
@@ -21,21 +21,21 @@ describe('Counter unit tests', () => {
   test('Initial count should be 0', () => {
     const countKey = stringToBytes('count');
     const count : StaticArray<u8> = Storage.get(countKey);
-    expect(count).toStrictEqual(u8toByte(0));
+    expect(count).toStrictEqual(u64ToBytes(0));
   });
 
   test('Initialize function should initialize the counter', () => {
     const countKey = stringToBytes('count');
-    Storage.set(countKey, u8toByte(10));
+    Storage.set(countKey, u64ToBytes(10));
     initialize();
     const count : StaticArray<u8> = Storage.get(countKey);
-    expect(count).toStrictEqual(u8toByte(0));
+    expect(count).toStrictEqual(u64ToBytes(0));
   });
 
   test('getCount function should get the count', () => {
     initialize();
     const countKey = stringToBytes('count');
-    Storage.set(countKey, u8toByte(11));
+    Storage.set(countKey, u64ToBytes(11));
     const count: StaticArray<u8> = Storage.get(countKey);
     const getCountResult = getCount();
     expect(count).toStrictEqual(getCountResult);
@@ -43,10 +43,10 @@ describe('Counter unit tests', () => {
 
   test('increment should increment the count', () => {
     initialize();
-    const incrementValueU8: u8 = 111;
-    const incrementValueBytes: StaticArray<u8> = u8toByte(incrementValueU8);
+    const incrementValueU64: u64 = 111;
+    const incrementValueBytes: StaticArray<u8> = u64ToBytes(incrementValueU64);
     const finalCountBytes: StaticArray<u8> = increment(incrementValueBytes);
-    const finalCountU8 = byteToU8(finalCountBytes);
-    expect(finalCountU8).toStrictEqual(incrementValueU8);
+    const finalCountU64 = bytesToU64(finalCountBytes);
+    expect(finalCountU64).toStrictEqual(incrementValueU64);
   });
 });

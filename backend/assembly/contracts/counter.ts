@@ -1,5 +1,5 @@
 import { Storage, Context, generateEvent } from '@massalabs/massa-as-sdk';
-import { Args, u8toByte, stringToBytes } from '@massalabs/as-types';
+import { Args, u64ToBytes, stringToBytes } from '@massalabs/as-types';
 
 export function constructor(): void {
   assert(Context.isDeployingContract(), "Constructor can only be called during deployment");
@@ -10,7 +10,7 @@ export const countKey = stringToBytes('count');
 
 // Initializes the counter to 0
 export function initialize(): void {
-  Storage.set(countKey, u8toByte(0));
+  Storage.set(countKey, u64ToBytes(0));
   generateEvent("The counter initialized to 0");
 }
 
@@ -21,12 +21,12 @@ export function getCount(): StaticArray<u8> {
 }
 
 export function increment(n: StaticArray<u8>): StaticArray<u8> {
-  // Deserialize the argument as an u8 number
-  const incrementValue: u8 = new Args(n).nextU8().expect('n argument is missing or invalid');
+  // Deserialize the argument as an u64 number
+  const incrementValue: u64 = new Args(n).nextU64().expect('n argument is missing or invalid');
   const count : StaticArray<u8> = Storage.get(countKey);  
-  const countU8 : u8 = new Args(count).nextU8().expect('count argument is missing or invalid')
-  const totalCount: u8 = countU8 + incrementValue;
-  const newCountBytes :  StaticArray<u8> = u8toByte(totalCount);
+  const countu64 : u64 = new Args(count).nextU64().expect('count argument is missing or invalid')
+  const totalCount: u64 = countu64 + incrementValue;
+  const newCountBytes :  StaticArray<u8> = u64ToBytes(totalCount);
   Storage.set(countKey, newCountBytes);
   generateEvent(`Counter incremented by ${incrementValue}. New value: ${totalCount}`);
   return newCountBytes;

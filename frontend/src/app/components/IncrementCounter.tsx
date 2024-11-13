@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
 import { getWallets, Wallet } from "@massalabs/wallet-provider";
-import { Args, bytesToStr, OperationStatus, Provider } from "@massalabs/massa-web3";
+import { Args, OperationStatus, Provider } from "@massalabs/massa-web3";
 // import {
 //   ClientFactory,
 //   Args,
@@ -11,14 +11,17 @@ import { Args, bytesToStr, OperationStatus, Provider } from "@massalabs/massa-we
 // } from '@massalabs/massa-web3';
 
 // Smart Contract Address to interact with
-const CONTRACT_ADDRESS = "AS128meaUmpiRsSUr1AtW2G6xC7LCGAAFzuif3dJAmUd1igreAakc";
+const CONTRACT_ADDRESS = "AS1vGiXBQknd5QeVk6cyys3JZRMGf1EX5XBfLKTqeRHxeo6ypmPe";
 
 export default function IncrementCounter() {
   const [provider, setProvider] = useState<Provider>(); // State for the provider
   const [wallet, setWallet] = useState<Wallet>(); // State for the provider
   const [connected, setConnected] = useState<boolean>(false); // State for the provider
-  const [count, setCount] = useState<bigint>(BigInt(0)); // State to dispay the count from the smart contract
+  // const [count, setCount] = useState<bigint>(BigInt(0)); // State to dispay the count from the smart contract
+  const [count, setCount] = useState<bigint>(); // State to dispay the count from the smart contract
   const [incrementValue, setIncrementValue] = useState<number>(0); // State for the input field
+  const [account, setAccount] = useState<string>(""); // State for account
+
 
   // async function initProvider() {
   const initProvider = useCallback(async () => {
@@ -34,6 +37,7 @@ export default function IncrementCounter() {
     }
 
     const accounts = await wallet?.accounts();
+    setAccount(accounts[0].address)
     console.log("🚀 ~ initProvider ~ accounts:", accounts)
 
     if (accounts.length === 0) {
@@ -61,6 +65,8 @@ export default function IncrementCounter() {
         console.log("Failed to connect to wallet");
         return;
       }
+      // setAccount((await wallet?.accounts())[0].address)
+      // console.log("🚀 ~ connectWallet ~ wallet.accounts():", (await wallet?.accounts())[0].address)
     }
   }
 
@@ -76,10 +82,15 @@ export default function IncrementCounter() {
       target: CONTRACT_ADDRESS,
     });
 
-    const resultNumber: bigint = new Args(result.value).nextU32();
+    const resultNumber: bigint = new Args(result.value).nextU64();
+    console.log("🚀 ~ getCount ~ resultNumber:", resultNumber)
 
     return resultNumber;
   }
+
+  // useEffect(() => {
+  //   getCount();
+  // }, []);
 
   // // Handle input change
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,7 +112,7 @@ export default function IncrementCounter() {
     }
 
     const op = await provider.callSC({
-      parameter: new Args().addU32(BigInt(incrementValue)).serialize(),
+      parameter: new Args().addU64(BigInt(incrementValue)).serialize(),
       func: "setCount",
       target: CONTRACT_ADDRESS,
     });
@@ -147,12 +158,12 @@ export default function IncrementCounter() {
           placeholder="Enter number"
           style={{ marginRight: "10px", padding: "5px" }}
         />
-
         <button type="submit" style={{ padding: "5px 10px" }}>
           Increment
         </button>
         <p>Count: {count}</p>
       </form>
+      account: {account}
     </div>
   );
 }
