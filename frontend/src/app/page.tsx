@@ -5,14 +5,18 @@ import "./globals.css";
 import styles from './styles/Home.module.css';
 import IncrementCounter from "./components/IncrementCounter";
 
+
+// Wallet
+// import { ConnectMassaWallet } from './components/ConnectMassaWallets/ConnectMassaWallet';
+// import { useAccountStore } from '../store';
+
+
 export default function Home() {
 return (
   <div className={styles.container}>
     <Head>
-      <title>Create Next App</title>
-      {/* <link rel="icon" href="/favicon.ico" /> 
-      CREATE ICON 
-      */}
+      <title>Massa Counter</title>
+      <link rel="icon" href="/favicon.ico"/>    
     </Head>
 
     <main>
@@ -26,12 +30,11 @@ return (
 
     <footer>
       <a
-        href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
+        href="https://massa.net/"
         target="_blank"
         rel="noopener noreferrer"
       >
-        Powered by{' '}
-        <img src="/vercel.svg" alt="Vercel" className={styles.logo} />
+        <img src="/logo_massa.svg" alt="Massa Logo" className={styles.logo} />
       </a>
     </footer>
 
