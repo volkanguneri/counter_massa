@@ -80,6 +80,12 @@ return (
     `}</style>
 
     <style jsx global>{`
+      #userAccount {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      color: #fff;
+      }
       html,
       body {
         padding: 0;
