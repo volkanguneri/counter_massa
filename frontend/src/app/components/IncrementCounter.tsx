@@ -1,7 +1,8 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
 import { getWallets, Wallet } from "@massalabs/wallet-provider";
-import { Args, OperationStatus, Provider } from "@massalabs/massa-web3";
+import { Args, EventPoller, OperationStatus, Provider, SCEvent } from "@massalabs/massa-web3";
+// import { scheduler } from "timers/promises";
 
 // Smart Contract Address to interact with
 const CONTRACT_ADDRESS = "AS12niiD27mLinQfvQx5dKXm1YjXKkbeiFUVg4g9eHnpPrx4FDbRT";
@@ -13,7 +14,9 @@ export default function IncrementCounter() {
   const [count, setCount] = useState<bigint>(); // State to dislpay the count from the smart contract
   const [incrementValue, setIncrementValue] = useState<number | "">(""); // State for the input field
   const [account, setAccount] = useState<string>(""); // State for account
-  const [isPendingInc, setIsPendingInc] = useState<boolean>(false); 
+  const [isPendingInc, setIsPendingInc] = useState<boolean>(false); // To create spinner for Increment button 
+  const [isPendingRes, setIsPendingRes] = useState<boolean>(false); // To create spinner for Reset button 
+  const [events, setEvents] = useState<SCEvent[]>([]);
 
   // Inits provider
   const initProvider = useCallback(async () => {
@@ -38,9 +41,12 @@ export default function IncrementCounter() {
 
     // We use the first account as the provider
     const provider = accounts[0];
-    console.log("initProvider ~ provider:", provider);
     setProvider(provider);
   }, []);
+
+  const shortenedAccount = account 
+  ? `${account.slice(0, 4)}...${account.slice(-2)}`
+  : '';
 
   useEffect(() => {
     initProvider();
@@ -48,7 +54,6 @@ export default function IncrementCounter() {
 
   // Handles wallet connection
   async function connectWallet() {
-    console.log("connectWallet ~ wallet:", wallet);
     if (wallet) {
       const connectAction = await wallet.connect();
       setConnected(connectAction);
@@ -75,7 +80,6 @@ export default function IncrementCounter() {
     });
 
     const resultNumber: bigint = new Args(result.value).nextU64();
-    console.log("🚀 ~ getCount ~ resultNumber:", resultNumber)
 
     return resultNumber;
   }
@@ -106,10 +110,8 @@ export default function IncrementCounter() {
       func: "increment",
       target: CONTRACT_ADDRESS,
     });
-    console.log("handleSubmit ~ op:", op);
 
     const status = await op.waitSpeculativeExecution();
-    console.log("🚀 ~ handleSubmit ~ status:", status)
 
     if (status !== OperationStatus.SpeculativeSuccess) {
       alert("Failed to set count");
@@ -128,21 +130,70 @@ export default function IncrementCounter() {
         return BigInt(0);
       }
 
-    const op = await provider.callSC({
-       func: "reset",
-       target: CONTRACT_ADDRESS,
-     });
+      const op = await provider.callSC({
+        func: "reset",
+        target: CONTRACT_ADDRESS,
+      });
 
-    const status = await op.waitSpeculativeExecution();
-    console.log("🚀 ~ handleSubmit ~ status:", status)
+      const status = await op.waitSpeculativeExecution();
 
-    if (status !== OperationStatus.SpeculativeSuccess) {
-      alert("Failed to set count");
-      return;
+      if (status !== OperationStatus.SpeculativeSuccess) {
+        alert("Failed to set count");
+        return;
+      }
+      setCount(await getCount());
     }
-    setCount(await getCount());
-    }
-   
+  
+
+
+
+// // event poller
+// let stop = false;
+
+// // Callback function for handling incoming events
+// const onData = async (events: SCEvent[]) => {
+//   for (const event of events) {
+//     console.log(
+//       `Event period: ${event.context.slot.period} thread: ${event.context.slot.thread} -`,
+//       event.data,
+//     );
+//     // setEvents(event.data);
+//   }
+// };
+
+// // Callback function for handling errors
+// const onError = (error: Error) => {
+//   console.error('Error:', error);
+//   stop = true; // Stop polling in case of an error
+// };
+
+// if (!provider) {
+//    console.error("Provider not initialized");
+//    return;
+//  }
+
+// // Start the event poller with a 5-second interval
+// const { stopPolling } = EventPoller.start(
+//   provider,
+//   {
+//     smartContractAddress: CONTRACT_ADDRESS, 
+//   },
+//   onData,
+//   onError,
+//   5000, // Polling interval in milliseconds
+// );
+
+// // Continue polling until stopped
+// while (!stop) {
+//   await scheduler.wait(5000);
+// }
+// stopPolling(); // Stop polling once the loop terminates
+
+
+
+
+
+  
   // If no provider, displays a message to inform the user 
   if (!provider) {
     return (
@@ -159,7 +210,7 @@ export default function IncrementCounter() {
       <div className="app-container">
         <p>Wallet not connected... </p>
         <p>Please connect your Massa wallet</p>
-        <button onClick={() => connectWallet()}>Connect</button>
+        <button onClick={() => connectWallet()} style={{ padding: "5px 10px", backgroundColor: "black", color: "white", borderRadius:".7em", cursor:"pointer", marginBottom: "2em"}}>Connect</button>
       </div>
     );
   }
@@ -175,19 +226,21 @@ export default function IncrementCounter() {
           placeholder="Enter number"
           style={{ marginRight: "10px", padding: "5px" }}
         />
-        <button type="submit" style={{ padding: "5px 10px", backgroundColor: "black", color: "white", borderRadius:"1em", cursor:"pointer"}}>
+        <button type="submit" style={{ padding: "5px 10px", backgroundColor: "black", color: "white", borderRadius:".7em", cursor:"pointer"}}>
           Increment
-          {isPendingInc && <span className="loading loading-spinner loading-xs"></span>}
+          {isPendingInc && <span style={{marginLeft: "1em"}} className="loading loading-spinner loading-xs"></span>}
         </button>
       </form>
       <div>
         <p>Count: {count}</p>
-        <button onClick={handleReset} type="button" style={{ padding: "5px 10px", backgroundColor: "black", color: "white", borderRadius:"1em", cursor:"pointer", marginBottom: "2em"}}>
+        <button onClick={handleReset} type="button" style={{ padding: "5px 10px", backgroundColor: "black", color: "white", borderRadius:".7em", cursor:"pointer", marginBottom: "2em"}}>
           Reset
         </button>
       </div>
       <div id="userAccount">
         account: {account}
+      </div>
+      <div>
       </div>
     </div>
   );
