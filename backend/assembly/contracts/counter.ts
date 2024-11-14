@@ -6,30 +6,35 @@ export function constructor(): void {
   initialize();
 }
 
-export const countKey = stringToBytes('count');
+export const COUNT_KEY = stringToBytes('count');
 
-// Initializes the counter to 0
+// Initializes the counter to 7
 export function initialize(): void {
-  Storage.set(countKey, u64ToBytes(0));
-  generateEvent("The counter initialized to 0");
+  setCount(u64ToBytes(7));
 }
 
 // Gets the count value
 export function getCount(): StaticArray<u8> {
-  const countBytes = Storage.get(countKey);
-  return countBytes;
+  return Storage.get(COUNT_KEY);
 }
 
-export function increment(n: StaticArray<u8>): StaticArray<u8> {
-  // Deserialize the argument as an u64 number
-  const incrementValue: u64 = new Args(n).nextU64().expect('n argument is missing or invalid');
-  const count : StaticArray<u8> = Storage.get(countKey);  
-  const countu64 : u64 = new Args(count).nextU64().expect('count argument is missing or invalid')
-  const totalCount: u64 = countu64 + incrementValue;
-  const newCountBytes :  StaticArray<u8> = u64ToBytes(totalCount);
-  Storage.set(countKey, newCountBytes);
-  generateEvent(`Counter incremented by ${incrementValue}. New value: ${totalCount}`);
-  return newCountBytes;
+export function setCount(c: StaticArray<u8>): void {
+  const countValue = new Args(c)
+    .nextU64()
+    .expect('count argument is missing or invalid');
+  Storage.set(COUNT_KEY, u64ToBytes(countValue));
+  generateEvent(`Counter set to ${countValue}`);
 }
 
+export function increment(n: StaticArray<u8>): void {
+  const incrementValue = new Args(n)
+    .nextU64()
+    .expect('increment argument is missing or invalid');
+  const countValue = new Args(getCount()).nextU64().expect('getCount is missing or invalid');
+  const totalCount = countValue + incrementValue;
+  setCount(u64ToBytes(totalCount));
+}
 
+export function reset(): void {
+  setCount(u64ToBytes(0));
+}

@@ -4,12 +4,7 @@ import Head from "next/head";
 import "./globals.css";
 import styles from './styles/Home.module.css';
 import IncrementCounter from "./components/IncrementCounter";
-
-
-// Wallet
-// import { ConnectMassaWallet } from './components/ConnectMassaWallets/ConnectMassaWallet';
-// import { useAccountStore } from '../store';
-
+import Header from "./components/Header";
 
 export default function Home() {
 return (
@@ -18,6 +13,8 @@ return (
       <title>Massa Counter</title>
       <link rel="icon" href="/favicon.ico"/>    
     </Head>
+
+    <Header/>
 
     <main>
       <h1 className={styles.title}>
@@ -28,7 +25,7 @@ return (
       </div>
     </main>
 
-    <footer>
+    <footer >
       <a
         href="https://massa.net/"
         target="_blank"

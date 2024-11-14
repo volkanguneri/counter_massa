@@ -1,0 +1,56 @@
+"use client"
+import React from "react";
+import Head from "next/head";
+import "./globals.css";
+import styles from './styles/Home.module.css';
+import IncrementCounter from "./components/IncrementCounter";
+import Header from "./components/Header";
+
+export default function Home() {
+  return (
+        <div className="min-h-screen flex flex-col">
+          <Head>
+            <title>Massa Counter</title>
+            <link rel="icon" href="/favicon.ico"/>
+          </Head>
+    
+          <Header />
+    
+          <main className="flex flex-1 flex-col justify-center items-center py-20">
+            <h1 className="text-4xl font-bold text-center mb-8">
+              Counter
+            </h1>
+            <div className="grid place-items-center">
+              <IncrementCounter />
+            </div>
+          </main>
+    
+          <footer className="w-full h-24 border-t border-gray-300 flex justify-center items-center">
+            {/* <a
+              href="https://massa.net/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex justify-center items-center"
+            >
+              <img 
+                src="/logo_massa.svg" 
+                alt="Massa Logo" 
+                className="w-2 h-auto" // Redimensionner l'image dans le footer
+              />
+            </a> */}
+          </footer>
+    
+          <style jsx global>{`
+            html,
+            body {
+              font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+              padding: 0;
+              margin: 0;
+            }
+            * {
+              box-sizing: border-box;
+            }
+          `}</style>
+        </div>
+  );
+}

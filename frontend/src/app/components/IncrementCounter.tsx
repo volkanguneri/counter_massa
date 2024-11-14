@@ -2,16 +2,9 @@
 import { useState, useEffect, useCallback } from "react";
 import { getWallets, Wallet } from "@massalabs/wallet-provider";
 import { Args, OperationStatus, Provider } from "@massalabs/massa-web3";
-// import {
-//   ClientFactory,
-//   Args,
-//   Address,
-//   IClient,
-//   fromMAS,
-// } from '@massalabs/massa-web3';
 
 // Smart Contract Address to interact with
-const CONTRACT_ADDRESS = "AS1vGiXBQknd5QeVk6cyys3JZRMGf1EX5XBfLKTqeRHxeo6ypmPe";
+const CONTRACT_ADDRESS = "AS12niiD27mLinQfvQx5dKXm1YjXKkbeiFUVg4g9eHnpPrx4FDbRT";
 
 export default function IncrementCounter() {
   const [provider, setProvider] = useState<Provider>(); // State for the provider
@@ -19,7 +12,7 @@ export default function IncrementCounter() {
   const [connected, setConnected] = useState<boolean>(false); // State for the provider
   // const [count, setCount] = useState<bigint>(BigInt(0)); // State to dispay the count from the smart contract
   const [count, setCount] = useState<bigint>(); // State to dispay the count from the smart contract
-  const [incrementValue, setIncrementValue] = useState<number>(0); // State for the input field
+  const [incrementValue, setIncrementValue] = useState<number>(1); // State for the input field
   const [account, setAccount] = useState<string>(""); // State for account
 
 
@@ -30,7 +23,7 @@ export default function IncrementCounter() {
     // const wallet = walletList.find((provider: { name: () => string }) => provider.name() === "BEARBY");
     const wallet = walletList[0];
     setWallet(wallet);
-    
+
     if (!wallet) {
       console.log("No wallet found");
       return;
@@ -65,8 +58,8 @@ export default function IncrementCounter() {
         console.log("Failed to connect to wallet");
         return;
       }
-      // setAccount((await wallet?.accounts())[0].address)
-      // console.log("🚀 ~ connectWallet ~ wallet.accounts():", (await wallet?.accounts())[0].address)
+
+      setCount(await getCount());
     }
   }
 
@@ -88,10 +81,6 @@ export default function IncrementCounter() {
     return resultNumber;
   }
 
-  // useEffect(() => {
-  //   getCount();
-  // }, []);
-
   // // Handle input change
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
@@ -103,7 +92,6 @@ export default function IncrementCounter() {
       alert("No provider found");
       return;
     }
-
     e.preventDefault();
 
     if (!incrementValue) {
@@ -113,9 +101,10 @@ export default function IncrementCounter() {
 
     const op = await provider.callSC({
       parameter: new Args().addU64(BigInt(incrementValue)).serialize(),
-      func: "setCount",
+      func: "increment",
       target: CONTRACT_ADDRESS,
     });
+    console.log("handleSubmit ~ op:", op);
 
     const status = await op.waitSpeculativeExecution();
     console.log("🚀 ~ handleSubmit ~ status:", status)
@@ -128,6 +117,26 @@ export default function IncrementCounter() {
     setCount(await getCount());
     setIncrementValue(0);
   };
+
+  const handleReset = async ()  => {
+      if (!provider) {
+        console.log("No provider found");
+        return BigInt(0);
+      }
+
+      const result = await provider.callSC({
+        func: "reset",
+        target: CONTRACT_ADDRESS,
+      });
+    }
+
+    // useEffect(() => {
+    //   const fetchCount = async () => {
+    //     const newCount = await getCount();
+    //     setCount(newCount);
+    //   };
+    //   fetchCount();
+    // }, [handleReset]);
 
   if (!provider) {
     return (
@@ -153,16 +162,22 @@ export default function IncrementCounter() {
       <form onSubmit={handleSubmit}>
         <input
           type="number"
+          name="input"
           value={incrementValue}
           onChange={handleInputChange}
           placeholder="Enter number"
           style={{ marginRight: "10px", padding: "5px" }}
         />
-        <button type="submit" style={{ padding: "5px 10px" }}>
+        <button type="submit" style={{ padding: "5px 10px", backgroundColor: "black", color: "white", borderRadius:"1em", cursor:"pointer"}}>
           Increment
         </button>
-        <p>Count: {count}</p>
       </form>
+      <div>
+        <p>Count: {count}</p>
+        <button onClick={handleReset} type="submit" style={{ padding: "5px 10px", backgroundColor: "black", color: "white", borderRadius:"1em", cursor:"pointer", marginBottom: "2em"}}>
+          Reset
+        </button>
+      </div>
       account: {account}
     </div>
   );
