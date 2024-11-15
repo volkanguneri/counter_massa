@@ -17,21 +17,21 @@ return (
     <Header/>
 
     <main>
-      <h1 className={styles.title}>
-        Counter
-      </h1>
       <div className={styles.grid}>
       <IncrementCounter/>
       </div>
     </main>
 
     <footer >
+      <span>
+      © 2024 Volkan Guneri
+      </span>
       <a
         href="https://massa.net/"
         target="_blank"
         rel="noopener noreferrer"
       >
-        <img src="/logo_massa.svg" alt="Massa Logo" className={styles.logo} />
+        <img src="/logo_massa.svg" alt="Massa Logo" />
       </a>
     </footer>
 
@@ -51,9 +51,18 @@ return (
         display: flex;
         justify-content: center;
         align-items: center;
+        gap: 3em;
       }
       footer img {
-        margin-left: 0.5rem;
+        width: 5em; 
+        height: 5em;
+      }
+      footer span {
+        font-size:.8em;
+      }
+      footer img {
+        width: 5em; 
+        height: 5em;
       }
       footer a {
         display: flex;
@@ -78,14 +87,7 @@ return (
           monospace;
       }
     `}</style>
-
     <style jsx global>{`
-      #userAccount {
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
-      color: #fff;
-      }
       html,
       body {
         padding: 0;

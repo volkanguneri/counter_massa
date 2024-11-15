@@ -1,4 +1,3 @@
-
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -18,31 +17,39 @@ const Header = () => {
   }, []);
 
   return (
-    <header style={{ ...headerStyle, justifyContent: isMobile ? 'center' : 'flex-start' }}>
+    <header className={`header ${isMobile ? 'mobile' : ''}`}>
       <Link href="">
-        <Image 
-          src="./logo.svg" 
-          alt="Logo" 
-          width={50} 
-          height={50} 
-          style={logoStyle}
+        <Image
+          src="/logo.svg"
+          alt="Logo"
+          width={50}
+          height={50}
+          className="logo"
         />
       </Link>
+      <h1 className="title">Counter</h1>
+      <style jsx>{`
+        .header {
+          display: flex;
+          align-items: center;
+          padding: 10px 20px;
+          background-color: black;
+          width: 100%;
+        }
+        .mobile {
+          justify-content: center;
+        }
+        .logo {
+          cursor: pointer;
+        }
+        .title {
+          color: white;
+          font-size: 2rem;
+          margin-left: 10px;
+        }
+      `}</style>
     </header>
   );
-};
-
-// Styles
-const headerStyle = {
-  display: 'flex',
-  alignItems: 'start',
-  padding: '10px 20px',
-  backgroundColor: 'black',
-  width: '100%'
-};
-
-const logoStyle = {
-  cursor: 'pointer',
 };
 
 export default Header;

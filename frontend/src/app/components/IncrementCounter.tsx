@@ -1,111 +1,98 @@
-"use client";
 import { useState, useEffect, useCallback } from "react";
-import { getWallets, Wallet } from "@massalabs/wallet-provider";
 import { Args, EventPoller, OperationStatus, Provider, SCEvent } from "@massalabs/massa-web3";
-// import { scheduler } from "timers/promises";
+import { getWallets, Wallet } from "@massalabs/wallet-provider";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-// Smart Contract Address to interact with
 const CONTRACT_ADDRESS = "AS12niiD27mLinQfvQx5dKXm1YjXKkbeiFUVg4g9eHnpPrx4FDbRT";
 
 export default function IncrementCounter() {
+  // States
+  const [count, setCount] = useState<bigint>(); // State to display the count from the smart contract
+  const [incrementValue, setIncrementValue] = useState<number | "">(""); // State for input field
+  const [isPendingInc, setIsPendingInc] = useState<boolean>(false); // Spinner state for Increment button
+  const [isPendingRes, setIsPendingRes] = useState<boolean>(false); // Spinner state for Reset button
   const [provider, setProvider] = useState<Provider>(); // State for the provider
-  const [wallet, setWallet] = useState<Wallet>(); // State for the provider
-  const [connected, setConnected] = useState<boolean>(false); // State for the provider
-  const [count, setCount] = useState<bigint>(); // State to dislpay the count from the smart contract
-  const [incrementValue, setIncrementValue] = useState<number | "">(""); // State for the input field
-  const [account, setAccount] = useState<string>(""); // State for account
-  const [isPendingInc, setIsPendingInc] = useState<boolean>(false); // To create spinner for Increment button
-  const [isPendingRes, setIsPendingRes] = useState<boolean>(false); // To create spinner for Reset button
-  const [events, setEvents] = useState<SCEvent[]>([]);
-  const [eventsStop, setEventsStop] = useState<boolean>(false);
+  const [wallet, setWallet] = useState<Wallet>(); // State for the wallet
+  const [connected, setConnected] = useState<boolean>(false); // Wallet connection status
+  const [account, setAccount] = useState<string>(""); // State for user's account
+  const [events, setEvents] = useState<SCEvent[]>([]); // State for events
+  const [eventsStop, setEventsStop] = useState<boolean>(false); // Stop polling state
 
-  // Inits provider
+  // Shorten the blockchain address for display
+  const shortenedAccount = account ? `${account.slice(0, 6)}...${account.slice(-6)}` : "";
+
+  // Initialize provider and wallet
   const initProvider = useCallback(async () => {
     const walletList = await getWallets();
-    console.log("initProvider ~ walletList:", walletList);
-    const wallet = walletList[0];
-    setWallet(wallet);
+    const selectedWallet = walletList[0]; // Assuming only one wallet type, Bearby for now
+    setWallet(selectedWallet);
 
-    if (!wallet) {
-      console.log("No wallet found");
+    if (!selectedWallet) {
+      toast.error("No wallet found");
       return;
     }
 
-    // Gets user's account address
-    const accounts = await wallet?.accounts();
+    const accounts = await selectedWallet?.accounts();
     setAccount(accounts[0].address);
 
     if (accounts.length === 0) {
-      console.log("No accounts found");
+      toast.error("No accounts found");
       return;
     }
 
-    // We use the first account as the provider
     const provider = accounts[0];
     setProvider(provider);
 
-    //////////////////////////////////////////////////////////
-    // event poller
-
-    // Callback function for handling incoming events
-    const onData = async (events: SCEvent[]) => {
+    // MASSA EVENT POLLER setup
+    const onData = (events: SCEvent[]) => {
       setEvents(events);
       for (const event of events) {
         console.log(`Event period: ${event.context.slot.period} thread: ${event.context.slot.thread} -`, event.data);
       }
     };
 
-    // Callback function for handling errors
     const onError = (error: Error) => {
       console.error("Error:", error);
-      setEventsStop(true); // Stop polling in case of an error
+      setEventsStop(true); // Stop polling on error
+      toast.error("Error during event polling");
     };
 
     if (!provider) {
-      console.error("Provider not initialized");
+      toast.error("Provider not initialized");
       return;
     }
 
-    // Start the event poller with a 5-second interval
-    // const poller = new EventPoller(provider, start, 5000);
+    // Start the event poller
     const { stopPolling } = EventPoller.start(
       provider,
-      {
-        smartContractAddress: CONTRACT_ADDRESS,
-      },
+      { smartContractAddress: CONTRACT_ADDRESS },
       onData,
       onError,
       5000 // Polling interval in milliseconds
     );
-
-    // Continue polling until stopped
-    // while (!stop) {
-    //   await scheduler.wait(5000);
-    // }
-    // stopPolling(); // Stop polling once the loop terminates
   }, []);
 
-  const shortenedAccount = account ? `${account.slice(0, 4)}...${account.slice(-2)}` : "";
-
+  // Effect to initialize the provider when the component mounts
   useEffect(() => {
     initProvider();
   }, [initProvider]);
 
+  // Effect to handle new events and display them as toast notifications
   useEffect(() => {
-    console.log("useEffect ~ events:", events);
     if (events.length > 0) {
-      alert(events.at(-1)?.data);
+      toast.info(events.at(-1)?.data as string); // Show event data in an info toast
     }
   }, [events]);
 
-  // Handles wallet connection
+  // Connect wallet function
   async function connectWallet() {
     if (wallet) {
       const connectAction = await wallet.connect();
       setConnected(connectAction);
 
       if (!connectAction) {
-        console.log("Failed to connect to wallet");
+        toast.error("Failed to connect to wallet");
         return;
       }
 
@@ -113,10 +100,10 @@ export default function IncrementCounter() {
     }
   }
 
-  // Gets the count stored in Counter smart contract
+  // Fetch the current count from the smart contract
   async function getCount() {
     if (!provider) {
-      console.log("No provider found");
+      toast.error("No provider found");
       return BigInt(0);
     }
 
@@ -125,28 +112,27 @@ export default function IncrementCounter() {
       target: CONTRACT_ADDRESS,
     });
 
-    const resultNumber: bigint = new Args(result.value).nextU64();
-
-    return resultNumber;
+    return new Args(result.value).nextU64();
   }
 
-  // Handles input
+  // Handle input change for increment value
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
     setIncrementValue(value);
   };
 
-  // Handles button submit
+  // Handle increment button click
   const handleSubmit = async (e: React.FormEvent) => {
     try {
-      if (!provider) {
-        alert("No provider found");
-        return;
-      }
       e.preventDefault();
 
+      if (!provider) {
+        toast.error("No provider found");
+        return;
+      }
+
       if (!incrementValue) {
-        alert("Please enter a number");
+        toast.warning("Please enter a number");
         return;
       }
 
@@ -161,7 +147,7 @@ export default function IncrementCounter() {
       const status = await op.waitSpeculativeExecution();
 
       if (status !== OperationStatus.SpeculativeSuccess) {
-        alert("Failed to set count");
+        toast.error("Failed to increment count");
         return;
       }
 
@@ -171,116 +157,177 @@ export default function IncrementCounter() {
     } catch (e) {
       console.info(e instanceof Error ? e.message : String(e));
       setIsPendingInc(false);
+      toast.error("An error occurred while incrementing");
     }
   };
 
-  // Handles reset button
+  // Handle reset button click
   const handleReset = async () => {
     try {
-    if (!provider) {
-      console.log("No provider found");
-      return BigInt(0);
+      if (!provider) {
+        toast.error("No provider found");
+        return;
+      }
+
+      setIsPendingRes(true);
+
+      const op = await provider.callSC({
+        func: "reset",
+        target: CONTRACT_ADDRESS,
+      });
+
+      const status = await op.waitSpeculativeExecution();
+
+      if (status !== OperationStatus.SpeculativeSuccess) {
+        toast.error("Failed to reset count");
+        return;
+      }
+
+      setCount(await getCount());
+      setIsPendingRes(false);
+    } catch (e) {
+      console.info(e instanceof Error ? e.message : String(e));
+      setIsPendingRes(false);
+      toast.error("An error occurred while resetting");
     }
-
-    setIsPendingRes(true);
-
-    const op = await provider.callSC({
-      func: "reset",
-      target: CONTRACT_ADDRESS,
-    });
-
-    const status = await op.waitSpeculativeExecution();
-
-    if (status !== OperationStatus.SpeculativeSuccess) {
-      alert("Failed to set count");
-      return;
-    }
-    setCount(await getCount());
-    setIsPendingRes(false);
-  } catch (e) {
-    console.info(e instanceof Error ? e.message : String(e));
-    setIsPendingRes(false);
-  }
   };
 
-  // If no provider, displays a message to inform the user
+  // If no provider or wallet, display the relevant message
   if (!provider) {
     return (
       <div className="app-container">
-        <p>Loading Provider... </p>
+        <p>Loading Provider...</p>
         <p>Please install the Massa wallet and configure it for the Buildnet network</p>
       </div>
     );
   }
 
-  // If no wallet, displays a message to inform the user
   if (!connected) {
     return (
       <div className="app-container">
-        <p>Wallet not connected... </p>
+        <p>Wallet not connected...</p>
         <p>Please connect your Massa wallet</p>
-        <button
-          onClick={() => connectWallet()}
-          style={{
-            padding: "5px 10px",
-            backgroundColor: "black",
-            color: "white",
-            borderRadius: ".7em",
-            cursor: "pointer",
-            marginBottom: "2em",
-          }}
-        >
+        <button onClick={connectWallet} className="connect-button">
           Connect
         </button>
+  
+        <style jsx>{`
+          .connect-button {
+            padding: 5px 10px;
+            background-color: black;
+            color: white;
+            border-radius: 0.7em;
+            cursor: pointer;
+            margin-bottom: 2em;
+            font-size: 16px;
+          }
+  
+          .connect-button:hover {
+            background-color: #444;
+          }
+        `}</style>
       </div>
     );
   }
-
+  
   return (
-    <div style={{ textAlign: "center", marginTop: "50px" }}>
-      <form onSubmit={handleSubmit}>
+    <div className="container">
+      <div className="count">
+        <p>{count}</p>
+      </div>
+
+      <form onSubmit={handleSubmit} className="form">
         <input
           type="number"
           name="input"
           value={incrementValue || ""}
           onChange={handleInputChange}
           placeholder="Enter number"
-          style={{ marginRight: "10px", padding: "5px" }}
+          className="input-field"
         />
-        <button
-          type="submit"
-          style={{
-            padding: "5px 10px",
-            backgroundColor: "black",
-            color: "white",
-            borderRadius: ".7em",
-            cursor: "pointer",
-          }}
-        >
-          Increment
-          {isPendingInc && <span style={{ marginLeft: "1em" }} className="loading loading-spinner loading-xs"></span>}
-        </button>
+
+        <div className="button-section">
+          <button type="submit" className="action-button">
+            Increment
+            {isPendingInc && <span className="loading-spinner"></span>}
+          </button>
+
+          <button onClick={handleReset} className="action-button">
+            Reset
+            {isPendingRes && <span className="loading-spinner"></span>}
+          </button>
+        </div>
       </form>
-      <div>
-        <p>Count: {count}</p>
-        <button
-          onClick={handleReset}
-          type="button"
-          style={{
-            padding: "5px 10px",
-            backgroundColor: "black",
-            color: "white",
-            borderRadius: ".7em",
-            cursor: "pointer",
-            marginBottom: "2em",
-          }}
-        >
-          Reset
-          {isPendingRes && <span style={{ marginLeft: "1em" }} className="loading loading-spinner loading-xs"></span>}
-        </button>
-      </div>
-      <div id="userAccount">account: {account}</div>
-      <div></div>
+      <div id="userAccount" className="account">Account: {shortenedAccount}</div>
+      <ToastContainer /> {/* Toast notifications */}
+      
+      <style jsx>{`
+        .container {
+          display:flex;
+          flex-direction:column;
+          text-align: center;
+        }
+
+        .title {
+          color: #000;
+          font-size: 2.5rem;
+        }
+
+        .form {
+          display: flex;
+          flex-direction:column;
+          align-items: center;
+        }
+
+        .input-field {
+          width: 8.5em;
+          margin: 0 1em 2em 0;
+          padding: .4em 1em;
+          border-radius: 1em;
+        }
+
+        .action-button {
+          padding: .6em 1.5em;
+          margin-bottom:1em;
+          background-color: black;
+          color: white;
+          border-radius: 0.7em;
+          cursor: pointer;
+          border: none;
+        }
+
+        .action-button:hover {
+            background-color: #444;
+        }
+
+        .loading-spinner {
+          margin-left: 1em;
+          border: 2px solid #fff;
+        }
+
+        .count {
+          font-size: 3rem;
+          font-weight:bold;
+        }
+
+        .button-section {
+          display:flex;
+          gap:1em;
+        }
+
+        .account {
+          margin-top: 1em;
+          font-size: 1rem;
+          color:#000;
+          background-color:#fff;
+          border-radius: 1em;
+          padding:1em;
+          z-index:100;
+          position: fixed;
+          top: 1rem;
+          right: 1rem;
+        }
+      `}</style>
     </div>
   );
 }
