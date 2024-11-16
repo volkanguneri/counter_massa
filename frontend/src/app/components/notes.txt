@@ -5,7 +5,7 @@ import { getWallets, Wallet } from "@massalabs/wallet-provider";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const CONTRACT_ADDRESS = "AS1xAJ48Rwqnr7H5i3L6QJP9Gqzm57cXKMQ3ekYX6P2wE7Kh6JCd";
+const CONTRACT_ADDRESS = "AS12niiD27mLinQfvQx5dKXm1YjXKkbeiFUVg4g9eHnpPrx4FDbRT";
 
 export default function IncrementCounter() {
   
@@ -228,8 +228,8 @@ export default function IncrementCounter() {
         </div>
       </form>
       <div id="userAccount" className="account">Account: {shortenedAccount}</div>
-      <ToastContainer />
-
+      <ToastContainer /> {/* Toast notifications */}
+      
       <style jsx>{`
         .container {
           display:flex;
@@ -247,19 +247,17 @@ export default function IncrementCounter() {
           flex-direction:column;
           align-items: center;
           justify-content: center;
-          gap:2em;
         }
 
         .input-field {
-          width: 100%;
-          margin: 0;
+          width: 8.5em;
+          margin: 0 1em 0 0;
           padding: .4em 1em;
           border-radius: 1em;
           text-align:center;
         }
 
         .action-button {
-          width: 100%;
           padding: .6em 1.5em;
           margin-bottom:1em;
           background-color: black;
@@ -284,7 +282,6 @@ export default function IncrementCounter() {
         }
 
         .button-section {
-          width: 100%;
           text-aligne:center;
         }
 
