@@ -3,12 +3,15 @@ import {
   Account,
   Mas,
   SmartContract,
-  Web3Provider,
+  Web3Provider, Args
 } from '@massalabs/massa-web3';
 import { getScByteCode } from './utils';
 
 const account = await Account.fromEnv();
 const provider = Web3Provider.buildnet(account);
+
+// const owner = 'AU1JC5Q7c6mV7TcEtj2yA1Cv49JSiFz4xS8dnbGbmKHbVfrmFHvJ';
+// let ownerArg = new Args().addString(owner).serialize();
 
 console.log('Deploying contract...');
 
@@ -16,7 +19,8 @@ const byteCode = getScByteCode('build', 'counter.wasm');
 const contract = await SmartContract.deploy(
   provider,
   byteCode,
-  undefined, //The constructor doesn't require any parameter
+  // ownerArg,
+  undefined,
   { coins: Mas.fromString('0.01') },
 );
 
