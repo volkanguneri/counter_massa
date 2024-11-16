@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback } from "react";
 import { Args, EventPoller, OperationStatus, Provider, SCEvent } from "@massalabs/massa-web3";
 import { getWallets, Wallet } from "@massalabs/wallet-provider";
@@ -7,15 +8,19 @@ import 'react-toastify/dist/ReactToastify.css';
 const CONTRACT_ADDRESS = "AS12niiD27mLinQfvQx5dKXm1YjXKkbeiFUVg4g9eHnpPrx4FDbRT";
 
 export default function IncrementCounter() {
-  // States
+  
+  // Handle provider and wallet connection
+  const [provider, setProvider] = useState<Provider>(); // State for the provider
+  const [wallet, setWallet] = useState<Wallet>(); // State for the wallet
+  const [account, setAccount] = useState<string>(""); // State for user's account
+  const [connected, setConnected] = useState<boolean>(false); // Wallet connection status
+
+  // Handle increment and getCount functions
   const [count, setCount] = useState<bigint>(); // State to display the count from the smart contract
   const [incrementValue, setIncrementValue] = useState<number | "">(""); // State for input field
   const [isPendingInc, setIsPendingInc] = useState<boolean>(false); // Spinner state for Increment button
-  const [isPendingRes, setIsPendingRes] = useState<boolean>(false); // Spinner state for Reset button
-  const [provider, setProvider] = useState<Provider>(); // State for the provider
-  const [wallet, setWallet] = useState<Wallet>(); // State for the wallet
-  const [connected, setConnected] = useState<boolean>(false); // Wallet connection status
-  const [account, setAccount] = useState<string>(""); // State for user's account
+
+  // Handle event operations
   const [events, setEvents] = useState<SCEvent[]>([]); // State for events
   const [eventsStop, setEventsStop] = useState<boolean>(false); // Stop polling state
 
@@ -161,37 +166,6 @@ export default function IncrementCounter() {
     }
   };
 
-  // Handle reset button click
-  const handleReset = async () => {
-    try {
-      if (!provider) {
-        toast.error("No provider found");
-        return;
-      }
-
-      setIsPendingRes(true);
-
-      const op = await provider.callSC({
-        func: "reset",
-        target: CONTRACT_ADDRESS,
-      });
-
-      const status = await op.waitSpeculativeExecution();
-
-      if (status !== OperationStatus.SpeculativeSuccess) {
-        toast.error("Failed to reset count");
-        return;
-      }
-
-      setCount(await getCount());
-      setIsPendingRes(false);
-    } catch (e) {
-      console.info(e instanceof Error ? e.message : String(e));
-      setIsPendingRes(false);
-      toast.error("An error occurred while resetting");
-    }
-  };
-
   // If no provider or wallet, display the relevant message
   if (!provider) {
     return (
@@ -251,16 +225,11 @@ export default function IncrementCounter() {
             Increment
             {isPendingInc && <span className="loading-spinner"></span>}
           </button>
-
-          <button onClick={handleReset} className="action-button">
-            Reset
-            {isPendingRes && <span className="loading-spinner"></span>}
-          </button>
         </div>
       </form>
       <div id="userAccount" className="account">Account: {shortenedAccount}</div>
-      <ToastContainer /> {/* Toast notifications */}
-      
+      <ToastContainer />
+
       <style jsx>{`
         .container {
           display:flex;
@@ -277,16 +246,20 @@ export default function IncrementCounter() {
           display: flex;
           flex-direction:column;
           align-items: center;
+          justify-content: center;
+          gap:2em;
         }
 
         .input-field {
-          width: 8.5em;
-          margin: 0 1em 2em 0;
+          width: 100%;
+          margin: 0;
           padding: .4em 1em;
           border-radius: 1em;
+          text-align:center;
         }
 
         .action-button {
+          width: 100%;
           padding: .6em 1.5em;
           margin-bottom:1em;
           background-color: black;
@@ -311,8 +284,8 @@ export default function IncrementCounter() {
         }
 
         .button-section {
-          display:flex;
-          gap:1em;
+          width: 100%;
+          text-aligne:center;
         }
 
         .account {
