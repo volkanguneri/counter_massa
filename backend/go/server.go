@@ -13,7 +13,6 @@ import (
 	sendOperation "github.com/massalabs/station/pkg/node/sendoperation"
 	"github.com/massalabs/station/pkg/node/sendoperation/callsc"
 	"github.com/massalabs/station/pkg/node/sendoperation/signer"
-	// "github.com/massalabs/station/pkg/node/sendoperation/callsc"
 )
 
 // :::::::::::::::::::::::::::::event response::::::::::::::::::::::::::::::::::::::::::
@@ -47,18 +46,24 @@ func main() {
 	}
 	log.Println("Loaded .env file")
 
-	// Load private key from environment variables
 	privateKey := os.Getenv("PRIVATE_KEY")
 	if privateKey == "" {
 		log.Fatalf("PRIVATE_KEY not set in .env file")
 	}
 	log.Println("Private key loaded from .env")
 
+	nickname := os.Getenv("NICKNAME")
+	if nickname == "" {
+		log.Fatalf("NICKNAME not set in .env file")
+	}
+	log.Println("Nickname loaded from .env")
+
 	// Network configuration for Massa node
 	networkInfos := &config.NetworkInfos{
 		NodeURL: "https://buildnet.massa.net/api/v2", 
 		ChainID: 77658366,             
 	}
+	
 	log.Printf("Network configuration: NodeURL = %s, ChainID = %d", networkInfos.NodeURL, networkInfos.ChainID)
 
 	// Smart contract and owner details
@@ -83,7 +88,7 @@ func main() {
 	log.Println("Calling reset function on contract:", contractAddress)
 	opResponse, err := CallFunction(
 		networkInfos,
-		"nickname", // Account nickname used for signing
+		nickname,
 		contractAddress,
 		function,
 		parameter,
