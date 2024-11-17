@@ -16,10 +16,28 @@ import (
 	// "github.com/massalabs/station/pkg/node/sendoperation/callsc"
 )
 
+// :::::::::::::::::::::::::::::event response::::::::::::::::::::::::::::::::::::::::::
+
 type OperationWithEventResponse struct {
 	Event             string
 	OperationResponse sendOperation.OperationResponse
 }
+
+// ::::::::::::::::::::::::::::::::signer:::::::::::::::::::::::::::::::::::::::::::::::::
+
+//nolint:tagliatelle
+type SignOperationResponse struct {
+	PublicKey     string `json:"publicKey"`
+	Signature     string `json:"signature"`
+	CorrelationID string `json:"correlationId,omitempty"`
+	Operation     string `json:"operation,omitempty"`
+}
+
+type Signer interface {
+	Sign(nickname string, operation []byte) (*SignOperationResponse, error)
+}
+
+// ::::::::::::::::::::::::::::::main::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 func main() {
 	// Load environment variables
@@ -41,10 +59,10 @@ func main() {
 		NodeURL: "https://buildnet.massa.net/api/v2", 
 		ChainID: 77658366,             
 	}
-	log.Printf("Network configuration: NodeURL = %s, ChainID = %s", networkInfos.NodeURL, networkInfos.ChainID)
+	log.Printf("Network configuration: NodeURL = %s, ChainID = %d", networkInfos.NodeURL, networkInfos.ChainID)
 
 	// Smart contract and owner details
-	contractAddress := "AS1xAJ48Rwqnr7H5i3L6QJP9Gqzm57cXKMQ3ekYX6P2wE7Kh6JCdcd" 
+	contractAddress := "AS1xAJ48Rwqnr7H5i3L6QJP9Gqzm57cXKMQ3ekYX6P2wE7Kh6JCd" 
 	function := "reset"                        // Function to call
 	parameter := []byte{}                      // No parameters for reset function
 	fee := uint64(1)                        // Operation fee
@@ -52,18 +70,14 @@ func main() {
 	coins := uint64(3)                         // Amount of coins for the operation
 	expiryDelta := uint64(1000)                // Expiry time in seconds
 	async := false                             // Wait for event
+	
+	var signer signer.Signer = &signer.WalletPlugin{} // Signer setup
 
-
-
-
-	// // Signer setup
-	var signer signer.Signer = signer.NewPrivateKeySigner(privateKey)
-	log.Println("Signer created with private key")
-
-	// // Create operation batch for the transaction
-	operationBatch := sendoperation.NewOperationBatch()
-
-
+	// Create operation batch for the transaction
+	operationBatch := sendOperation.OperationBatch{
+		NewBatch:      true,             
+		CorrelationID: "",               
+	}
 
 	// // Calling the reset function on the smart contract
 	log.Println("Calling reset function on contract:", contractAddress)
