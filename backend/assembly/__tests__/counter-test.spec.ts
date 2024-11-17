@@ -6,7 +6,6 @@ import { setOwner, ownerAddress, isOwner } from '../contracts/utils/ownership';
 const owner: string = 'AU1JC5Q7c6mV7TcEtj2yA1Cv49JSiFz4xS8dnbGbmKHbVfrmFHvJ';
 let ownerArg: StaticArray<u8> = new Args().add(owner).serialize();
 const randomUser: string = 'AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiq';
-let randoUserArg: StaticArray<u8> = new Args().add(randomUser).serialize();
 const COUNT_KEY = stringToBytes('count');
 
 beforeAll(() => {
@@ -18,6 +17,7 @@ beforeAll(() => {
 describe('Counter unit tests', () => {
 
   describe('count', () => {
+
     test('Initial count should be 7', () => {
       setDeployContext(owner);
       const count: StaticArray<u8> = Storage.get(COUNT_KEY);
@@ -54,17 +54,20 @@ describe('Counter unit tests', () => {
 
     test('isOwner', () =>
       expect(isOwner(ownerArg)).toStrictEqual(boolToByte(true)));
+
     test('reset should fail if caller is not the owner', () => {
       setDeployContext(randomUser);
       expect(() => {
         reset();
       }).toThrow('Caller is not the owner');
     });
+
     test('reset should work if caller is the owner', () => {
       setDeployContext(owner);
       expect(() => {
         reset();
       }).not.toThrow();
+      
     });
   });
 });
