@@ -21,7 +21,7 @@ export const COUNT_KEY = stringToBytes('count');
  * @dev This function is called internally during the contract's deployment.
  */
 export function initialize(): void {
-  setCount(u64ToBytes(7));
+  Storage.set(COUNT_KEY, u64ToBytes(7));
 }
 
 /**
@@ -38,6 +38,7 @@ export function getCount(): StaticArray<u8> {
  * @param c The new counter value serialized as a `StaticArray<u8>`.
  */
 export function setCount(c: StaticArray<u8>): void {
+  onlyOwner(); // Ensure the caller is the owner
   const countValue = new Args(c)
     .nextU64()
     .expect('count argument is missing or invalid');

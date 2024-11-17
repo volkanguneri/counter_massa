@@ -67,7 +67,7 @@ func main() {
 	log.Printf("Network configuration: NodeURL = %s, ChainID = %d", networkInfos.NodeURL, networkInfos.ChainID)
 
 	// Smart contract and owner details
-	contractAddress := "AS1xAJ48Rwqnr7H5i3L6QJP9Gqzm57cXKMQ3ekYX6P2wE7Kh6JCd" 
+	contractAddress := "AS12Kyo5zGWeXcs2jtBx87YMWn3HqCKz7W3MhVSPv6UZt8byxhFi3" 
 	function := "reset"                        // Function to call
 	parameter := []byte{}                      // No parameters for reset function
 	fee := uint64(1)                        // Operation fee
