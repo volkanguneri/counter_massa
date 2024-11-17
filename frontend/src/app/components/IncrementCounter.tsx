@@ -85,9 +85,14 @@ export default function IncrementCounter() {
 
   // Effect to handle new events and display them as toast notifications
   useEffect(() => {
-    if (events.length > 0) {
-      toast.info(events.at(-1)?.data as string); // Show event data in an info toast
-    }
+    const asyncEffect = async () => {
+      if (events.length > 0) {
+        toast.info(events.at(-1)?.data as string); // Show event data in an info toast
+        setCount(await getCount());
+      }
+    };
+
+    asyncEffect();
   }, [events]);
 
   // Connect wallet function
@@ -223,7 +228,7 @@ export default function IncrementCounter() {
         <div className="button-section">
           <button type="submit" className="action-button">
             Increment
-            {isPendingInc && <span className="loading-spinner"></span>}
+            {isPendingInc && <span className="loading loading-spinner loading-xs"></span>}
           </button>
         </div>
       </form>
