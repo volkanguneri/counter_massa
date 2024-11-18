@@ -12,7 +12,7 @@ pnpm install
 💡 Note: If you ever encounter an @as-pect file missing error, kindly install it by running:
 
 ```shell
-pnpm instal -D @as-pect/assembly
+pnpm install -D @as-pect/assembly
 ```
 ## 🔨 Building the Backend
 
