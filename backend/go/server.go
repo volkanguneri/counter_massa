@@ -22,6 +22,7 @@ func ResetCounterHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Check if loaded privateKey and nickname
 	privateKey := os.Getenv("PRIVATE_KEY")
 	if privateKey == "" {
 		http.Error(w, "PRIVATE_KEY not set in .env file", http.StatusInternalServerError)
@@ -42,15 +43,24 @@ func ResetCounterHandler(w http.ResponseWriter, r *http.Request) {
 		ChainID: 77658366,                           
 	}
 
+	// Contract and function information
 	contractAddress := "AS123fnc8H8MVMuiuaDiLkAeFGTobSjPvUEhJLtCjB8RQ5Dd1hkm"
 	function := "reset" // Function to call in the contract
 	parameter := []byte{} // No parameters for reset
-	fee := uint64(1) // Operation fee 0.001
-	maxGas := uint64(100000) // Maximum gas estimate
-	coins := uint64(4) // Amount of coins for the operation 3.1
+
+	// 1 Massa = 1_000_000_000 
+	fee := uint64(1_000_000) // Operation fee 0.001
+	maxGas := uint64(100_000) // Maximum gas estimate
+	coins := uint64(4_000_000_000) // Amount of coins for the operation 3.1
 	expiryDelta := uint64(1000) // Expiry time in seconds
-	async := false // Synchronous mode
+
+	// Synchronous mode waits for bot only response but also events
+	async := false  
+
+	// Signer setup
 	var signer signer.Signer = &signer.WalletPlugin{}
+
+	// New operation batches
 	operation := sendOperation.OperationBatch{NewBatch: false, CorrelationID: ""}
 
 	// Calling the reset function on the smart contract
