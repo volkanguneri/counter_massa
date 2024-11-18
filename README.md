@@ -118,13 +118,33 @@ go version
 
 If not, follow the documentation on [Install GO](https://go.dev/doc/install).
 
-3. Once Go is installed, run the following commands:
+3. Once Go is installed, run the following command to install dependencies:
 
 ```shell
-go get
+go mod tidy
+```
+
+4. Start the server by running the following command:
+
+```shell
 go run server.go
 ```
 
+5. Test the Reset Endpoint:
+
+- Using curl: You can send a POST request directly from your terminal::
+
+```shell
+curl -X POST http://localhost:8080/reset
+```
+
+- Using your browser: You can visit http://localhost:8080/reset in your browser.
+
+This will trigger the smart contract's reset function on the Massa network.
+
+Here is the error message that i have at this point : 
+
+![Error Message](server_reset_error.PNG)
 
 ## Roadmap  ➡️
 - To never store your secrets and private keys in plain text on your hard disk by using .env files, implement the Chainlink env-enc module to encrypt your secrets before storing them, or use any other encryption procedure.

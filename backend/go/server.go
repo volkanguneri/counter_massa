@@ -38,21 +38,18 @@ func ResetCounterHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Network configuration for Massa node
 	networkInfos := &config.NetworkInfos{
-		NodeURL: "https://buildnet.massa.net/api/v2", // Massa node URL
-		ChainID: 77658366,                           // Chain ID
+		NodeURL: "https://buildnet.massa.net/api/v2", 
+		ChainID: 77658366,                           
 	}
 
-	// Contract address
 	contractAddress := "AS123fnc8H8MVMuiuaDiLkAeFGTobSjPvUEhJLtCjB8RQ5Dd1hkm"
 	function := "reset" // Function to call in the contract
 	parameter := []byte{} // No parameters for reset
-	fee := uint64(1000000) // Operation fee
+	fee := uint64(1) // Operation fee 0.001
 	maxGas := uint64(100000) // Maximum gas estimate
-	coins := uint64(3100000000) // Amount of coins for the operation
+	coins := uint64(4) // Amount of coins for the operation 3.1
 	expiryDelta := uint64(1000) // Expiry time in seconds
 	async := false // Synchronous mode
-
-	// Signer configuration
 	var signer signer.Signer = &signer.WalletPlugin{}
 	operation := sendOperation.OperationBatch{NewBatch: false, CorrelationID: ""}
 
