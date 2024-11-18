@@ -2,88 +2,61 @@ package main
 
 import (
 	"log"
-
+	"net/http"
 	"os"
 
 	"github.com/joho/godotenv"
 	"github.com/massalabs/station/int/config"
-	"github.com/massalabs/station/pkg/node"
 	sendOperation "github.com/massalabs/station/pkg/node/sendoperation"
 	"github.com/massalabs/station/pkg/node/sendoperation/signer"
 	"github.com/massalabs/station/pkg/onchain"
 )
 
-// :::::::::::::::::::::::::::::event response::::::::::::::::::::::::::::::::::::::::::
-
-type OperationWithEventResponse struct {
-	Event             string
-	OperationResponse sendOperation.OperationResponse
-}
-
-// ::::::::::::::::::::::::::::::::signer:::::::::::::::::::::::::::::::::::::::::::::::::
-
-//nolint:tagliatelle
-type SignOperationResponse struct {
-	PublicKey     string `json:"publicKey"`
-	Signature     string `json:"signature"`
-	CorrelationID string `json:"correlationId,omitempty"`
-	Operation     string `json:"operation,omitempty"`
-}
-
-type Signer interface {
-	Sign(nickname string, operation []byte) (*SignOperationResponse, error)
-}
-
-// ::::::::::::::::::::::::::::::main::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-func main() {
+// ResetCounterHandler handles the reset endpoint
+func ResetCounterHandler(w http.ResponseWriter, r *http.Request) {
 	// Load environment variables
 	err := godotenv.Load("../.env")
 	if err != nil {
+		http.Error(w, "Error loading .env file", http.StatusInternalServerError)
 		log.Fatalf("Error loading .env file: %v", err)
+		return
 	}
-	log.Println("Loaded .env file")
 
 	privateKey := os.Getenv("PRIVATE_KEY")
 	if privateKey == "" {
+		http.Error(w, "PRIVATE_KEY not set in .env file", http.StatusInternalServerError)
 		log.Fatalf("PRIVATE_KEY not set in .env file")
+		return
 	}
-	log.Println("Private key loaded from .env")
 
 	nickname := os.Getenv("NICKNAME")
 	if nickname == "" {
+		http.Error(w, "NICKNAME not set in .env file", http.StatusInternalServerError)
 		log.Fatalf("NICKNAME not set in .env file")
+		return
 	}
-	log.Println("Nickname loaded from .env")
 
 	// Network configuration for Massa node
 	networkInfos := &config.NetworkInfos{
-		NodeURL: "https://buildnet.massa.net/api/v2", 
-		ChainID: 77658366,             
+		NodeURL: "https://buildnet.massa.net/api/v2", // Massa node URL
+		ChainID: 77658366,                           // Chain ID
 	}
-	
-	log.Printf("Network configuration: NodeURL = %s, ChainID = %d", networkInfos.NodeURL, networkInfos.ChainID)
 
-	// Smart contract and owner details
-	contractAddress := "AS123fnc8H8MVMuiuaDiLkAeFGTobSjPvUEhJLtCjB8RQ5Dd1hkm" 
-	//  reset without onlyOwner for debugging
-	// contractAddress := "AS12niiD27mLinQfvQx5dKXm1YjXKkbeiFUVg4g9eHnpPrx4FDbRT" 
+	// Contract address
+	contractAddress := "AS123fnc8H8MVMuiuaDiLkAeFGTobSjPvUEhJLtCjB8RQ5Dd1hkm"
+	function := "reset" // Function to call in the contract
+	parameter := []byte{} // No parameters for reset
+	fee := uint64(1000000) // Operation fee
+	maxGas := uint64(100000) // Maximum gas estimate
+	coins := uint64(3100000000) // Amount of coins for the operation
+	expiryDelta := uint64(1000) // Expiry time in seconds
+	async := false // Synchronous mode
 
-	function := "reset"                        // Function to call
-	parameter := []byte{}                      // No parameters for reset function
-	fee := uint64(1000000)                     // Operation fee
-	maxGas := uint64(100000)                   // Maximum gas estimate
-	coins := uint64(3100000000)                // Amount of coins for the operation
-	expiryDelta := uint64(1000)                // Expiry time in seconds
-	async := false                             // Wait for event
-	
-	var signer signer.Signer = &signer.WalletPlugin{} // Signer setup
-	log.Printf("Signer: %+v\n", signer)
-
+	// Signer configuration
+	var signer signer.Signer = &signer.WalletPlugin{}
 	operation := sendOperation.OperationBatch{NewBatch: false, CorrelationID: ""}
 
-	// // Calling the reset function on the smart contract
-	log.Println("Calling reset function on contract:", contractAddress)
+	// Calling the reset function on the smart contract
 	opResponse, err := onchain.CallFunction(
 		networkInfos,
 		nickname,
@@ -100,28 +73,25 @@ func main() {
 		"Calling reset function",
 	)
 	if err != nil {
-		log.Fatalf("Error calling reset function: %v", err)
+		http.Error(w, "Error calling reset function", http.StatusInternalServerError)
+		log.Printf("Error calling reset function: %v", err)
+		return
 	}
 
-	// Log operation response
+	// Responding to the client with operation details
 	log.Printf("Operation Response: %+v", opResponse.OperationResponse)
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Counter reset successfully"))
+}
 
-	// Check if the reset function executed successfully
-	if !async {
-		// Wait for event if not async
-		log.Println("Waiting for event from the contract...")
-		events, err := node.ListenEvents(node.NewClient(networkInfos.NodeURL), nil, nil, nil, &opResponse.OperationResponse.OperationID, nil, true)
-		if err != nil {
-			log.Fatalf("Error listening for events: %v", err)
-		}
+func main() {
+	// Start the HTTP server
+	http.HandleFunc("/reset", ResetCounterHandler) // Reset counter endpoint
 
-		// Log the event
-		if len(events) > 0 {
-			log.Printf("Event received: %s", events[0].Data)
-		} else {
-			log.Println("No events received after operation")
-		}
-	} else {
-		log.Println("Async mode: No events will be awaited.")
+	// Start the server
+	log.Println("Server started on :8080")
+	err := http.ListenAndServe(":8080", nil)
+	if err != nil {
+		log.Fatalf("Error starting server: %v", err)
 	}
 }

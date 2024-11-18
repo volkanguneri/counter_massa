@@ -9,7 +9,7 @@ pnpm install
 ```
 💡 Note: There's a workspace setup at the root, so this will install all dependencies for both backend and frontend simultaneously!
 
-💡 Note: If you ever encounter an @as-pect file missing error, kindly install it by running:
+💡 Note: If you ever encounter an @as-pect file missing error, kindly install it in `backend` folder by running:
 
 ```shell
 pnpm install -D @as-pect/assembly
