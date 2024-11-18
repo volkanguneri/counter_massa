@@ -105,7 +105,7 @@ http://localhost:3000/
 
 To run the Go server to reset the counter, follow these steps:
 
-Navigate to the Go folder:
+1. Navigate to the Go folder:
 
 ```shell
 cd backend/go
@@ -129,7 +129,9 @@ go run server.go
 ## Roadmap  ➡️
 - To never store your secrets and private keys in plain text on your hard disk by using .env files, implement the Chainlink env-enc module to encrypt your secrets before storing them, or use any other encryption procedure.
 [Patrick Collins' video on the topic](https://www.youtube.com/watch?v=CIbhqRJ4B8I)
-- Massa wallet provider integration. 
 - More unit tests for better coverage.
 - More interactions with the Go server.
 - Improved code modularity in Next.js code. 
+- Massa wallet integration. 
+- Use `massa-web3/tree/next` instead of `massa-web3`
+- Use `wallet-provider/tree/next` instead of `wallet-provider`
