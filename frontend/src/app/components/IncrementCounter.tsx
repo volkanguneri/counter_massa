@@ -176,7 +176,7 @@ export default function IncrementCounter() {
     return (
       <div className="app-container">
         <p>Loading Provider...</p>
-        <p>Please install the Massa wallet and configure it for the Buildnet network</p>
+        <p>Please install the Bearby wallet and configure it for the Buildnet network</p>
       </div>
     );
   }
@@ -185,7 +185,7 @@ export default function IncrementCounter() {
     return (
       <div className="app-container">
         <p>Wallet not connected...</p>
-        <p>Please connect your Massa wallet</p>
+        <p>Please connect your Bearby wallet</p>
         <button onClick={connectWallet} className="connect-button">
           Connect
         </button>
