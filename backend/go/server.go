@@ -44,7 +44,7 @@ func ResetCounterHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Contract and function information
-	contractAddress := "AS123fnc8H8MVMuiuaDiLkAeFGTobSjPvUEhJLtCjB8RQ5Dd1hkm"
+	contractAddress := "AS12b4pgVgvF9GKL6S8wZ6AEKENeqihZ8Qmxkr5NT4Ho7wYp9D9NT"
 	function := "reset" // Function to call in the contract
 	parameter := []byte{} // No parameters for reset
 

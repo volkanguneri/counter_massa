@@ -5,7 +5,7 @@ import { getWallets, Wallet } from "@massalabs/wallet-provider";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const CONTRACT_ADDRESS = "AS123fnc8H8MVMuiuaDiLkAeFGTobSjPvUEhJLtCjB8RQ5Dd1hkm";
+const CONTRACT_ADDRESS = "AS12b4pgVgvF9GKL6S8wZ6AEKENeqihZ8Qmxkr5NT4Ho7wYp9D9NT";
 
 export default function IncrementCounter() {
   
