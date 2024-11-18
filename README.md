@@ -95,7 +95,7 @@ http://localhost:3000/
 
 ![Connect](counter01.PNG)
 
-🔗 Once connected, enjoy the app! 🎉
+🔗 Once connected, enjoy the DApp! 🎉
 
 ![Increment](counter02.PNG)
 
@@ -128,7 +128,7 @@ go run server.go
 
 ## Roadmap  ➡️
 - To never store your secrets and private keys in plain text on your hard disk by using .env files, implement the Chainlink env-enc module to encrypt your secrets before storing them, or use any other encryption procedure.
-[Have a look at Patrick Collins' video on the topic.](https://www.youtube.com/watch?v=CIbhqRJ4B8I).
+[Patrick Collins' video on the topic](https://www.youtube.com/watch?v=CIbhqRJ4B8I)
 - Massa wallet provider integration. 
 - More unit tests for better coverage.
 - More interactions with the Go server.
