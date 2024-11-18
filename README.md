@@ -135,3 +135,4 @@ go run server.go
 - Massa wallet integration. 
 - Use `massa-web3/tree/next` instead of `massa-web3`
 - Use `wallet-provider/tree/next` instead of `wallet-provider`
+- Use Tailwind

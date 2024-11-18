@@ -22,7 +22,6 @@ export default function IncrementCounter() {
 
   // Handle event operations
   const [events, setEvents] = useState<SCEvent[]>([]); // State for events
-  const [eventsStop, setEventsStop] = useState<boolean>(false); // Stop polling state
 
   // Shorten the blockchain address for display
   const shortenedAccount = account ? `${account.slice(0, 6)}...${account.slice(-6)}` : "";
@@ -59,7 +58,6 @@ export default function IncrementCounter() {
 
     const onError = (error: Error) => {
       console.error("Error:", error);
-      setEventsStop(true); // Stop polling on error
       toast.error("Error during event polling");
     };
 
@@ -76,6 +74,7 @@ export default function IncrementCounter() {
       onError,
       5000 // Polling interval in milliseconds
     );
+    console.log("🚀 ~ initProvider ~ stopPolling:", stopPolling)
   }, []);
 
   // Effect to initialize the provider when the component mounts
@@ -91,7 +90,6 @@ export default function IncrementCounter() {
         setCount(await getCount());
       }
     };
-
     asyncEffect();
   }, [events]);
 
@@ -105,7 +103,7 @@ export default function IncrementCounter() {
         toast.error("Failed to connect to wallet");
         return;
       }
-
+      
       setCount(await getCount());
     }
   }
