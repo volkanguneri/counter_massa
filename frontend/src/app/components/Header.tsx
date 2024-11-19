@@ -2,22 +2,34 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
+/**
+ * @title Header Component
+ * @notice Displays a responsive header with a logo and a title
+ * @dev Adapts layout based on screen size (mobile vs desktop)
+ */
 const Header = () => {
+  /// @notice State to track if the viewport is in mobile mode
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    /**
+     * @notice Handles window resize events to determine mobile mode
+     * @dev Updates `isMobile` state based on `window.innerWidth`
+     */
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
     };
 
-    handleResize();
+    handleResize(); // Initial check on component mount
     window.addEventListener('resize', handleResize);
 
+    // Clean up event listener on component unmount
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   return (
     <header className={`header ${isMobile ? 'mobile' : ''}`}>
+      {/* @notice Logo link to the homepage */}
       <Link href="">
         <Image
           src="/logo.svg"
@@ -27,7 +39,11 @@ const Header = () => {
           className="logo"
         />
       </Link>
+
+      {/* @notice Title of the application */}
       <h1 className="title">Counter</h1>
+
+      {/* @dev CSS styles scoped to this component */}
       <style jsx>{`
         .header {
           display: flex;

@@ -1,32 +1,92 @@
+/**
+ * @title IncrementCounter Component
+ * @dev React component to interact with a Massa Labs smart contract. It allows users to
+ *      increment a counter value stored in the blockchain and retrieve the current counter value.
+ * 
+ * @notice This component uses Massa's SDK to connect to the blockchain, fetch the counter state,
+ *         and submit transactions to increment the counter.
+ * 
+ * @fileoverview
+ *  - Connects to the Massa blockchain using Massa's SDK.
+ *  - Handles user interactions to increment the counter.
+ *  - Displays the current counter value and wallet address.
+ *  - Polls for smart contract events and displays them.
+ */
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react"; 
 import { Args, EventPoller, OperationStatus, Provider, SCEvent } from "@massalabs/massa-web3";
 import { getWallets, Wallet } from "@massalabs/wallet-provider";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const CONTRACT_ADDRESS = "AS12b4pgVgvF9GKL6S8wZ6AEKENeqihZ8Qmxkr5NT4Ho7wYp9D9NT";
+/**
+ * @constant CONTRACT_ADDRESS
+ * @type {string}
+ * @dev The address of the smart contract on the Massa blockchain.
+ */
+const CONTRACT_ADDRESS : string = "AS12b4pgVgvF9GKL6S8wZ6AEKENeqihZ8Qmxkr5NT4Ho7wYp9D9NT";
 
 export default function IncrementCounter() {
-  
-  // Handle provider and wallet connection
-  const [provider, setProvider] = useState<Provider>(); // State for the provider
-  const [wallet, setWallet] = useState<Wallet>(); // State for the wallet
-  const [account, setAccount] = useState<string>(""); // State for user's account
-  const [connected, setConnected] = useState<boolean>(false); // Wallet connection status
+  /**
+   * @state {Provider} provider
+   * @dev Stores the provider instance to interact with the blockchain.
+   */
+  const [provider, setProvider] = useState<Provider>();
 
-  // Handle increment and getCount functions
-  const [count, setCount] = useState<bigint>(); // State to display the count from the smart contract
-  const [incrementValue, setIncrementValue] = useState<number | "">(""); // State for input field
-  const [isPendingInc, setIsPendingInc] = useState<boolean>(false); // Spinner state for Increment button
+  /**
+   * @state {Wallet} wallet
+   * @dev Stores the wallet instance to manage user accounts and transactions.
+   */
+  const [wallet, setWallet] = useState<Wallet>();
 
-  // Handle event operations
-  const [events, setEvents] = useState<SCEvent[]>([]); // State for events
+  /**
+   * @state {string} account
+   * @dev Stores the user's wallet address.
+   */
+  const [account, setAccount] = useState<string>("");
 
-  // Shorten the blockchain address for display
-  const shortenedAccount = account ? `${account.slice(0, 6)}...${account.slice(-6)}` : "";
+  /**
+   * @state {boolean} connected
+   * @dev Indicates whether the wallet is connected to the blockchain.
+   */
+  const [connected, setConnected] = useState<boolean>(false);
 
-  // Initialize provider and wallet
+  /**
+   * @state {bigint} count
+   * @dev Stores the current counter value retrieved from the smart contract.
+   */
+  const [count, setCount] = useState<bigint>();
+
+  /**
+   * @state {number | ""} incrementValue
+   * @dev The value to increment the counter by, input by the user.
+   */
+  const [incrementValue, setIncrementValue] = useState<number | "">("");
+
+  /**
+   * @state {boolean} isPendingInc
+   * @dev Spinner state for the increment operation.
+   */
+  const [isPendingInc, setIsPendingInc] = useState<boolean>(false);
+
+  /**
+   * @state {SCEvent[]} events
+   * @dev Stores smart contract events retrieved during polling.
+   */
+  const [events, setEvents] = useState<SCEvent[]>([]);
+
+  /**
+   * @constant shortenedAccount
+   * @type {string}
+   * @dev Shortens the user's blockchain address for display purposes.
+   */
+  const shortenedAccount : string = account ? `${account.slice(0, 6)}...${account.slice(-6)}` : "";
+
+  /**
+   * @function initProvider
+   * @dev Initializes the provider and wallet connection.
+   *       Sets up event polling for smart contract events.
+   */
   const initProvider = useCallback(async () => {
     const walletList = await getWallets();
     const selectedWallet = walletList[0]; // Assuming only one wallet type, Bearby for now
@@ -48,7 +108,9 @@ export default function IncrementCounter() {
     const provider = accounts[0];
     setProvider(provider);
 
-    // MASSA EVENT POLLER setup
+    /**
+     * @dev MASSA EVENT POLLER setup
+     */
     const onData = (events: SCEvent[]) => {
       setEvents(events);
       for (const event of events) {
@@ -74,15 +136,19 @@ export default function IncrementCounter() {
       onError,
       5000 // Polling interval in milliseconds
     );
-    console.log("🚀 ~ initProvider ~ stopPolling:", stopPolling)
+    console.log("🚀 ~ initProvider ~ stopPolling:", stopPolling);
   }, []);
 
-  // Effect to initialize the provider when the component mounts
+  /**
+   * @dev Initializes the provider when the component mounts.
+   */
   useEffect(() => {
     initProvider();
   }, [initProvider]);
 
-  // Effect to handle new events and display them as toast notifications
+  /**
+   * @dev Listens for new events and updates the counter when events occur.
+   */
   useEffect(() => {
     const asyncEffect = async () => {
       if (events.length > 0) {
@@ -93,7 +159,9 @@ export default function IncrementCounter() {
     asyncEffect();
   }, [events]);
 
-  // Connect wallet function
+  /**
+   * @dev Connects the user's wallet to the blockchain and fetches the current counter value.
+   */
   async function connectWallet() {
     if (wallet) {
       const connectAction = await wallet.connect();
@@ -108,8 +176,10 @@ export default function IncrementCounter() {
     }
   }
 
-  // Fetch the current count from the smart contract
-  async function getCount() {
+  /**
+   * @dev Fetches the current counter value from the smart contract.
+   */
+  async function getCount() : Promise<bigint> {
     if (!provider) {
       toast.error("No provider found");
       return BigInt(0);
@@ -123,13 +193,20 @@ export default function IncrementCounter() {
     return new Args(result.value).nextU64();
   }
 
-  // Handle input change for increment value
+  /**
+   * @function handleInputChange
+   * @param {React.ChangeEvent<HTMLInputElement>} e
+   * @dev Updates the state with the user-input increment value.
+   */
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
     setIncrementValue(value);
   };
 
-  // Handle increment button click
+  /**
+   * @param {React.FormEvent} e
+   * @dev Sends a transaction to increment the counter in the smart contract.
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     try {
       e.preventDefault();
@@ -169,6 +246,10 @@ export default function IncrementCounter() {
     }
   };
 
+  /**
+   * @dev Renders the UI components based on wallet and provider status.
+   * @returns JSX Elements for Increment Counter functionality.
+   */
   // If no provider or wallet, display the relevant message
   if (!provider) {
     return (
