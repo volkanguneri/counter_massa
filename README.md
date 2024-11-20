@@ -146,13 +146,36 @@ Here is the error message that i have at this point :
 
 ![Error Message](server_reset_error.PNG)
 
-## Roadmap  ➡️
+ Roadmap  ➡️
 - To never store your secrets and private keys in plain text on your hard disk by using .env files, implement the Chainlink env-enc module to encrypt your secrets before storing them, or use any other encryption procedure.
-[Patrick Collins' video on the topic](https://www.youtube.com/watch?v=CIbhqRJ4B8I)
-- More unit tests for better coverage.
+
+- 
 - More interactions with the Go server.
 - Improved code modularity in Next.js code. 
 - Massa wallet integration. 
 - Use `massa-web3/tree/next` instead of `massa-web3`
 - Use `wallet-provider/tree/next` instead of `wallet-provider`
 - Use Tailwind
+
+## 🌟 Improvements
+
+🔒 Secure Secrets:
+
+Never store your secrets and private keys in plain text on your hard disk. 
+Use .env files and implement the Chainlink env-enc module to encrypt your secrets, or use any other encryption procedure. 
+🎥 Check out [Patrick Collins' video on the topic](https://www.youtube.com/watch?v=CIbhqRJ4B8I).
+
+✅ More unit tests for better test coverage.
+
+🌐 More interactions with the Go server.
+
+🧩 Improve modularity in Next.js code for better  maintainability.
+
+💳 Massa Wallet Integration.
+
+🌱 Integrate updated Dependencies:
+
+- Use massa-web3/tree/next 🌐
+- Use wallet-provider/tree/next 💼
+
+🎨 Adopt Tailwind for faster and more efficient styling!
