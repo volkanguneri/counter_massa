@@ -7,10 +7,10 @@ import {
     Args
   } from '@massalabs/massa-web3';
   
-const account = await Account.fromEnv("PRIVATE_KEY");
+const account = await Account.fromEnv('PRIVATE_KEY');
 const provider = Web3Provider.buildnet(account);
 
-const contractAddress : string = "AS12b4pgVgvF9GKL6S8wZ6AEKENeqihZ8Qmxkr5NT4Ho7wYp9D9NT";
+const contractAddress = "AS12b4pgVgvF9GKL6S8wZ6AEKENeqihZ8Qmxkr5NT4Ho7wYp9D9NT";
 const contract = new SmartContract(provider, contractAddress);
 
 const owner = 'AU1JC5Q7c6mV7TcEtj2yA1Cv49JSiFz4xS8dnbGbmKHbVfrmFHvJ';

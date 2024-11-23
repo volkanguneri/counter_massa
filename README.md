@@ -64,6 +64,13 @@ pnpm run deploy
 ```shell
 frontend/src/app/components/IncrementCounter.tsx
 ```
+4. To reset the counter: 
+
+```shell
+pnpm run reset
+```
+
+
 
 ## 🖥️ User Interface 
 
@@ -145,17 +152,6 @@ This will trigger the smart contract's reset function on the Massa network.
 Here is the error message that i have at this point : 
 
 ![Error Message](server_reset_error.PNG)
-
- Roadmap  ➡️
-- To never store your secrets and private keys in plain text on your hard disk by using .env files, implement the Chainlink env-enc module to encrypt your secrets before storing them, or use any other encryption procedure.
-
-- 
-- More interactions with the Go server.
-- Improved code modularity in Next.js code. 
-- Massa wallet integration. 
-- Use `massa-web3/tree/next` instead of `massa-web3`
-- Use `wallet-provider/tree/next` instead of `wallet-provider`
-- Use Tailwind
 
 ## 🌟 Improvements
 
