@@ -24,3 +24,11 @@ const contract = await SmartContract.deploy(
 );
 
 console.log('Contract deployed at:', contract.address);
+
+const events = await provider.getEvents({
+  smartContractAddress: contract.address,
+});
+
+for (const event of events) {
+  console.log('Event: ', event.data);
+}
