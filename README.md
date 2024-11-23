@@ -12,7 +12,7 @@ The main goal of this project is to showcase the integration of a smart contract
 - Reset Counter: Reset the counter from the backend.
 
 
-🚀 The Counter DApp is deployed on [fleek](https://fleek.xyz/). You can try it out directly [here](https://bearby.io/) without any installation.
+🚀 The Counter DApp is deployed on a [fleek](https://fleek.xyz/) domain. You can try it out directly [here](https://bearby.io/) without any installation.
 
 🌍 Ensure to have your Bearby wallet installed and have some Massa test tokens for seamless interaction!
 
