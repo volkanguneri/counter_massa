@@ -60,6 +60,8 @@ func ResetCounterHandler(w http.ResponseWriter, r *http.Request) {
 	// Signer setup
 	var signer signer.Signer = &signer.WalletPlugin{}
 
+	description := "Calling reset function"
+
 	// New operation batches
 	operation := sendOperation.OperationBatch{NewBatch: false, CorrelationID: ""}
 
@@ -77,7 +79,7 @@ func ResetCounterHandler(w http.ResponseWriter, r *http.Request) {
 		async,
 		operation,
 		signer,
-		"Calling reset function",
+		description,
 	)
 	if err != nil {
 		http.Error(w, "Error calling reset function", http.StatusInternalServerError)
@@ -91,9 +93,15 @@ func ResetCounterHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Counter reset successfully"))
 }
 
+func CounterHistoryHandler(w http.ResponseWriter, r *http.Request) {
+	log.Print("Counter History")
+}
+
+
 func main() {
 	// Start the HTTP server
 	http.HandleFunc("/reset", ResetCounterHandler) // Reset counter endpoint
+	http.HandleFunc("/history", CounterHistoryHandler) // History counter endpoint
 
 	// Start the server
 	log.Println("Server started on :8080")

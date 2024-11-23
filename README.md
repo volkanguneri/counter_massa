@@ -23,9 +23,9 @@ From the root of the project, simply run:
 ```shell
 pnpm install
 ```
-💡 Note: There's a workspace setup at the root, so this will install all dependencies for both backend and frontend simultaneously!
+> **Note:** There's a workspace setup at the root, so this will install all dependencies for both backend and frontend simultaneously!
 
-💡 Note: If you ever encounter an @as-pect file missing error, kindly install it in `backend` folder by running:
+> **Note:** If you ever encounter an @as-pect file missing error, kindly install it in `backend` folder by running:
 
 ```shell
 pnpm install -D @as-pect/assembly
@@ -65,7 +65,7 @@ pnpm run test
 
 👛 You can create an account on [Bearby](https://bearby.io/) or [Massa Wallet](https://station.massa.net/).
 
-💡 Note: To connect to Counter on the frontend, you'll need to use Bearby, as Massa Wallet connection is not implemented yet.
+> **Note:** To connect to Counter on the frontend, you'll need to use Bearby, as Massa Wallet connection is not implemented yet.
 
 2. To build the contracts in `assembly/contracts` and run the deployment script `src/deploy.ts`, which deploys to the node specified in the `.env` file:
 
@@ -110,9 +110,7 @@ http://localhost:3000/
 ```
 ...or any other port displayed in your terminal.
 
-💡 Note: If you have the Bearby wallet installed, a Connect button will appear.
-
-
+💪 If you have the Bearby wallet installed, a Connect button will appear.
 
 ![Connect](counter01.PNG)
 
@@ -120,7 +118,7 @@ http://localhost:3000/
 
 ![Increment](counter02.PNG)
 
-💡 Note: On your first connection, if the counter doesn't display correctly, just refresh the page! 
+> **Note:** On your first connection, if the counter doesn't display correctly, just refresh the page! 
 
 ## 🤖 Server & Smart Contract Interactions with Go
 
@@ -168,6 +166,20 @@ This will trigger the smart contract's reset function on the Massa network.
 Here is the error message that i have at this point : 
 
 ![Error Message](server_reset_error.PNG)
+
+6. Test the history Endpoint:
+
+- Using curl: You can send a POST request directly from your terminal::
+
+```shell
+curl -X POST http://localhost:8080/history
+```
+
+- Using your browser: You can visit http://localhost:8080/history in your browser.
+
+This Should display the counter history.
+
+> **Note:** This section is still under development 🔧💪
 
 ## 🌟 Improvements
 
