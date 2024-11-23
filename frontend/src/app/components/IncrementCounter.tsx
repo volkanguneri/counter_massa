@@ -1,16 +1,10 @@
 /**
  * @title IncrementCounter Component
  * @dev React component to interact with a Massa Labs smart contract. It allows users to
- *      increment a counter value stored in the blockchain and retrieve the current counter value.
+ *      increment a counter value stored in the blockchain, retrieve the current counter value and display events.
  * 
  * @notice This component uses Massa's SDK to connect to the blockchain, fetch the counter state,
  *         and submit transactions to increment the counter.
- * 
- * @fileoverview
- *  - Connects to the Massa blockchain using Massa's SDK.
- *  - Handles user interactions to increment the counter.
- *  - Displays the current counter value and wallet address.
- *  - Polls for smart contract events and displays them.
  */
 
 import { useState, useEffect, useCallback } from "react"; 
@@ -20,72 +14,58 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 /**
- * @constant CONTRACT_ADDRESS
- * @type {string}
  * @dev The address of the smart contract on the Massa blockchain.
  */
 const CONTRACT_ADDRESS : string = "AS12b4pgVgvF9GKL6S8wZ6AEKENeqihZ8Qmxkr5NT4Ho7wYp9D9NT";
 
 export default function IncrementCounter() {
   /**
-   * @state {Provider} provider
    * @dev Stores the provider instance to interact with the blockchain.
    */
   const [provider, setProvider] = useState<Provider>();
 
   /**
-   * @state {Wallet} wallet
    * @dev Stores the wallet instance to manage user accounts and transactions.
    */
   const [wallet, setWallet] = useState<Wallet>();
 
   /**
-   * @state {string} account
    * @dev Stores the user's wallet address.
    */
   const [account, setAccount] = useState<string>("");
 
   /**
-   * @state {boolean} connected
    * @dev Indicates whether the wallet is connected to the blockchain.
    */
   const [connected, setConnected] = useState<boolean>(false);
 
   /**
-   * @state {bigint} count
    * @dev Stores the current counter value retrieved from the smart contract.
    */
   const [count, setCount] = useState<bigint>();
 
   /**
-   * @state {number | ""} incrementValue
    * @dev The value to increment the counter by, input by the user.
    */
   const [incrementValue, setIncrementValue] = useState<number | "">("");
 
   /**
-   * @state {boolean} isPendingInc
    * @dev Spinner state for the increment operation.
    */
   const [isPendingInc, setIsPendingInc] = useState<boolean>(false);
 
   /**
-   * @state {SCEvent[]} events
    * @dev Stores smart contract events retrieved during polling.
    */
   const [events, setEvents] = useState<SCEvent[]>([]);
 
   /**
-   * @constant shortenedAccount
-   * @type {string}
    * @dev Shortens the user's blockchain address for display purposes.
    */
   const shortenedAccount : string = account ? `${account.slice(0, 6)}...${account.slice(-6)}` : "";
 
   /**
-   * @function initProvider
-   * @dev Initializes the provider and wallet connection.
-   *       Sets up event polling for smart contract events.
+   * @dev Initializes the provider and wallet connection and sets up event polling for smart contract events.
    */
   const initProvider = useCallback(async () => {
     const walletList = await getWallets();
@@ -128,7 +108,6 @@ export default function IncrementCounter() {
       return;
     }
 
-    // Start the event poller
     const { stopPolling } = EventPoller.start(
       provider,
       { smartContractAddress: CONTRACT_ADDRESS },
@@ -171,7 +150,7 @@ export default function IncrementCounter() {
         toast.error("Failed to connect to wallet");
         return;
       }
-      
+ 
       setCount(await getCount());
     }
   }
@@ -194,7 +173,6 @@ export default function IncrementCounter() {
   }
 
   /**
-   * @function handleInputChange
    * @param {React.ChangeEvent<HTMLInputElement>} e
    * @dev Updates the state with the user-input increment value.
    */
@@ -247,10 +225,11 @@ export default function IncrementCounter() {
   };
 
   /**
-   * @dev Renders the UI components based on wallet and provider status.
+   * @dev Renders the UI components based on wallet and provider status. 
+   * If no provider or wallet, display the relevant message
    * @returns JSX Elements for Increment Counter functionality.
    */
-  // If no provider or wallet, display the relevant message
+
   if (!provider) {
     return (
       <div className="app-container">
