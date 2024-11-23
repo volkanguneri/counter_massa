@@ -29,7 +29,6 @@ const Header = () => {
 
   return (
     <header className={`header ${isMobile ? 'mobile' : ''}`}>
-      {/* @notice Logo link to the homepage */}
       <Link href="">
         <Image
           src="/logo.svg"
@@ -40,10 +39,8 @@ const Header = () => {
         />
       </Link>
 
-      {/* @notice Title of the application */}
       <h1 className="title">Counter</h1>
 
-      {/* @dev CSS styles scoped to this component */}
       <style jsx>{`
         .header {
           display: flex;
