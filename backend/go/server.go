@@ -39,7 +39,7 @@ func ResetCounterHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Network configuration for Massa node
 	networkInfos := &config.NetworkInfos{
-		NodeURL: "https://buildnet.massa.net/api/v2", 
+		NodeURL: "https://test.massa.net/api/v2:33035", 
 		ChainID: 77658366,                           
 	}
 
