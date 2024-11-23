@@ -1,4 +1,20 @@
-# 🎉 Counter DApp on the Massa Blockchain 
+# 🎉 Counter DApp on the Massa Blockchain
+
+This project is a simple decentralized application (DApp) that lets users interact with a smart contract managing a counter. 
+
+The main goal of this project is to showcase the integration of a smart contract on the Massa blockchain using AssemblyScript and Massa SDK, while creating an intuitive React/TypeScript front-end and a Golang back-end service.
+
+🔑 Key Features:
+
+- Increment Counter: Increase the counter value from the frontend.
+- Read Counter Value: Display the current counter value.
+- Wallet Integration: Connect and display wallet info.
+- Reset Counter: Reset the counter from the backend.
+
+
+🚀 The Counter DApp is deployed on [fleek](https://fleek.xyz/). You can try it out directly [here](https://bearby.io/) without any installation.
+
+🌍 Ensure to have your Bearby wallet installed and have some Massa test tokens for seamless interaction!
 
 ## ⚙️ Installation Guide
 
@@ -47,7 +63,7 @@ pnpm run test
 
 ✅ Ensure to use a Massa blockchain account whose private key starts with `S`.
 
-👛 You can create an account on (["Bearby"](https://bearby.io/)) or (["Massa Wallet"](https://station.massa.net/)).
+👛 You can create an account on [Bearby](https://bearby.io/) or [Massa Wallet](https://station.massa.net/).
 
 💡 Note: To connect to Counter on the frontend, you'll need to use Bearby, as Massa Wallet connection is not implemented yet.
 
@@ -69,8 +85,6 @@ frontend/src/app/components/IncrementCounter.tsx
 ```shell
 pnpm run reset
 ```
-
-
 
 ## 🖥️ User Interface 
 
@@ -112,12 +126,14 @@ http://localhost:3000/
 
 To run the Go server to reset the counter, follow these steps:
 
-1. Navigate to the Go folder:
+1. Run Massa Station locally by following the documentation [here](https://docs.massa.net/docs/massaStation/install).
+
+2. Navigate to the Go folder:
 
 ```shell
 cd backend/go
 ```
-2. To ensure that Go is installed on your computer, run:
+3. To ensure that Go is installed on your computer, run:
 
 ```shell
 go version
@@ -125,19 +141,19 @@ go version
 
 If not, follow the documentation on [Install GO](https://go.dev/doc/install).
 
-3. Once Go is installed, run the following command to install dependencies:
+4. Once Go is installed, run the following command to install dependencies:
 
 ```shell
 go mod tidy
 ```
 
-4. Start the server by running the following command:
+5. Start the server by running the following command:
 
 ```shell
 go run server.go
 ```
 
-5. Test the Reset Endpoint:
+6. Test the Reset Endpoint:
 
 - Using curl: You can send a POST request directly from your terminal::
 
