@@ -57,7 +57,7 @@ pnpm run test
 
 ## 🚀 Deploying the Contract
 
-1. Enter your PRIVATE_KEY in .env file in the backend folder
+1. Enter your private key in `.env` file in the backend folder
 
 ```shell
   PRIVATE_KEY=
@@ -70,7 +70,7 @@ pnpm run test
 
 > **Note:** To connect to Counter on the frontend, you'll need to use Bearby, as Massa Wallet connection is not implemented yet.
 
-2. To compile the contracts located in assembly/contracts and execute the deployment script src/deploy.ts:
+2. To compile the contracts located in `assembly/contracts` and execute the deployment script `src/deploy.ts`:
 
 ```shell
 pnpm run deploy
@@ -90,7 +90,7 @@ and `contractAddress` in
 backend/go/server.go
 ```
 
-4. To reset the counter, simply run the following command in the backend folder:
+4. To reset the counter, simply run the following command in the `backend` folder:
 
 ```shell
 pnpm run reset
@@ -105,7 +105,7 @@ To run the user interface, follow these steps:
 ```shell
 cd frontend
 ```
-2. Start the Next.js server:
+2. Start the `Next.js server`:
 
 ```shell
 pnpm run dev
@@ -120,7 +120,7 @@ http://localhost:3000/
 ```
 ...or any other port displayed in your terminal.
 
-💪 If you have the Bearby wallet installed, a Connect button will appear.
+💪 If you have the `Bearby Wallet` installed, a Connect button will appear.
 
 ![Connect](counter01.PNG)
 
