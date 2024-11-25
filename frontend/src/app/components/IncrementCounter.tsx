@@ -36,6 +36,7 @@ export default function IncrementCounter() {
 
   /**
    * @dev Initializes the provider and wallet connection and sets up event polling for smart contract events.
+   * @issue as initProvider is listened and called by a useEffect hook, need useCallback to prevent impermanent loop
    */
   const initProvider = useCallback(async () => {
     const walletList = await getWallets();
@@ -60,11 +61,12 @@ export default function IncrementCounter() {
 
     /**
      * @dev Massa Event Poller setup
+     * @issue Should not be in init provider but if outside, error caused by useEffect listenning events
      */
     const onData = (events: SCEvent[]) => {
       setEvents(events);
       for (const event of events) {
-        console.log(`Event period: ${event.context.slot.period} thread: ${event.context.slot.thread} -`, event.data);
+        console.log("🚀 ~ onData ~ event data :", event.data )
       }
     };
 
@@ -78,6 +80,9 @@ export default function IncrementCounter() {
       return;
     }
 
+    /** 
+    * @issue can't use stopPolling as scheduler is not installed 
+    */
     const { stopPolling } = EventPoller.start(
       provider,
       { smartContractAddress: CONTRACT_ADDRESS },
@@ -86,7 +91,13 @@ export default function IncrementCounter() {
       5000 // Polling interval in milliseconds
     );
     console.log("🚀 ~ initProvider ~ stopPolling:", stopPolling);
-  }, []);
+
+    // Continue polling until stopped
+    // while (!stop) {
+    //   await scheduler.wait(5000);
+    // }
+    // stopPolling();
+  },[]);
 
   /**
    * @dev Initializes the provider when the component mounts.
@@ -99,13 +110,9 @@ export default function IncrementCounter() {
    * @dev Listens for new events and updates the counter when events occur.
    */
   useEffect(() => {
-    const asyncEffect = async () => {
       if (events.length > 0) {
         toast.info(events.at(-1)?.data as string); // Show event data in an info toast
-        setCount(await getCount());
       }
-    };
-    asyncEffect();
   }, [events]);
 
   /**
