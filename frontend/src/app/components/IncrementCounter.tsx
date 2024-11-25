@@ -13,54 +13,24 @@ import { getWallets, Wallet } from "@massalabs/wallet-provider";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-/**
- * @dev The address of the smart contract on the Massa blockchain.
- */
-const CONTRACT_ADDRESS : string = "AS12b4pgVgvF9GKL6S8wZ6AEKENeqihZ8Qmxkr5NT4Ho7wYp9D9NT";
-
 export default function IncrementCounter() {
-  /**
-   * @dev Stores the provider instance to interact with the blockchain.
-   */
-  const [provider, setProvider] = useState<Provider>();
+ 
+  const [provider, setProvider] = useState<Provider>(); //Stores the provider instance to interact with the blockchain.
+  const [wallet, setWallet] = useState<Wallet>(); //Stores the wallet instance to manage user accounts and transactions.
+  const [account, setAccount] = useState<string>(""); //Stores the user's wallet address.
+  const [connected, setConnected] = useState<boolean>(false); //Indicates whether the wallet is connected to the blockchain.
+  const [count, setCount] = useState<bigint>(); //Stores the current counter value retrieved from the smart contract.
+  const [incrementValue, setIncrementValue] = useState<number | "">(""); //The value to increment the counter by, input by the user.
+  const [isPendingInc, setIsPendingInc] = useState<boolean>(false); //Spinner state for the increment operation.
+  const [events, setEvents] = useState<SCEvent[]>([]); //Stores smart contract events retrieved during polling.
 
   /**
-   * @dev Stores the wallet instance to manage user accounts and transactions.
+   * @dev The address of the smart contract on the Massa blockchain.
    */
-  const [wallet, setWallet] = useState<Wallet>();
+    const CONTRACT_ADDRESS : string = "AS12b4pgVgvF9GKL6S8wZ6AEKENeqihZ8Qmxkr5NT4Ho7wYp9D9NT";
 
   /**
-   * @dev Stores the user's wallet address.
-   */
-  const [account, setAccount] = useState<string>("");
-
-  /**
-   * @dev Indicates whether the wallet is connected to the blockchain.
-   */
-  const [connected, setConnected] = useState<boolean>(false);
-
-  /**
-   * @dev Stores the current counter value retrieved from the smart contract.
-   */
-  const [count, setCount] = useState<bigint>();
-
-  /**
-   * @dev The value to increment the counter by, input by the user.
-   */
-  const [incrementValue, setIncrementValue] = useState<number | "">("");
-
-  /**
-   * @dev Spinner state for the increment operation.
-   */
-  const [isPendingInc, setIsPendingInc] = useState<boolean>(false);
-
-  /**
-   * @dev Stores smart contract events retrieved during polling.
-   */
-  const [events, setEvents] = useState<SCEvent[]>([]);
-
-  /**
-   * @dev Shortens the user's blockchain address for display purposes.
+   * @dev Shortens the user's blockchain address.
    */
   const shortenedAccount : string = account ? `${account.slice(0, 6)}...${account.slice(-6)}` : "";
 
@@ -89,7 +59,7 @@ export default function IncrementCounter() {
     setProvider(provider);
 
     /**
-     * @dev MASSA EVENT POLLER setup
+     * @dev Massa Event Poller setup
      */
     const onData = (events: SCEvent[]) => {
       setEvents(events);
