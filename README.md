@@ -1,4 +1,4 @@
-# 🎉 Counter DApp on the Massa Blockchain
+# 🎉 Counter DApp on the Massa Blockchain 🎉
 
 This project is a simple decentralized application (DApp) that lets users interact with a smart contract managing a counter. 
 
@@ -12,9 +12,12 @@ The main goal of this project is to showcase the integration of a smart contract
 - Reset Counter: Reset the counter from the backend.
 
 
-🚀 The Counter DApp is deployed on a [fleek](https://fleek.xyz/) domain. You can try it out directly [here](https://bearby.io/) without any installation.
+🚀 The Counter DApp is deployed on a [fleek](https://fleek.xyz/) domain. You can try it out directly [here](https://massa.on-fleek.app/) without any installation.
 
-🌍 Ensure to have your Bearby wallet installed and have some Massa test tokens for seamless interaction!
+🌍 Ensure to have your `Bearby Wallet` installed and have some `Massa buildnet tokens` for seamless interaction!
+
+✨ You can get them in the Discord `buildernet-faucet` channel:  
+👉 [Join the Discord here](https://discord.com/channels/828270821042159636/1097797634065956915).
 
 ## ⚙️ Installation Guide
 
@@ -25,7 +28,7 @@ pnpm install
 ```
 > **Note:** There's a workspace setup at the root, so this will install all dependencies for both backend and frontend simultaneously!
 
-> **Note:** If you ever encounter an @as-pect file missing error, kindly install it in `backend` folder by running:
+> **Note:** If you ever encounter an `@as-pect file missing error`, kindly install it in `backend` folder by running:
 
 ```shell
 pnpm install -D @as-pect/assembly
@@ -54,10 +57,10 @@ pnpm run test
 
 ## 🚀 Deploying the Contract
 
-1. Create a .env file in the backend folder with the following
+1. Enter your PRIVATE_KEY in .env file in the backend folder
 
 ```shell
-  WALLET_SECRET_KEY=
+  PRIVATE_KEY=
 ```
 🗝️ This key will be used by the deployer script to interact with the Massa blockchain.
 
@@ -67,7 +70,7 @@ pnpm run test
 
 > **Note:** To connect to Counter on the frontend, you'll need to use Bearby, as Massa Wallet connection is not implemented yet.
 
-2. To build the contracts in `assembly/contracts` and run the deployment script `src/deploy.ts`, which deploys to the node specified in the `.env` file:
+2. To compile the contracts located in assembly/contracts and execute the deployment script src/deploy.ts:
 
 ```shell
 pnpm run deploy
@@ -75,12 +78,19 @@ pnpm run deploy
 3. When deployment finishes, you’ll see the smart contract’s deployment address in the console. 
 
 - Copy this address 
-- Replace CONTRACT_ADDRESS with the deployed address in 
+- Replace `CONTRACT_ADDRESS` with the deployed address in 
 
 ```shell
 frontend/src/app/components/IncrementCounter.tsx
 ```
-4. To reset the counter: 
+
+and `contractAddress` in
+
+```shell
+backend/go/server.go
+```
+
+4. To reset the counter, simply run the following command in the backend folder:
 
 ```shell
 pnpm run reset
@@ -114,7 +124,7 @@ http://localhost:3000/
 
 ![Connect](counter01.PNG)
 
-🔗 Once connected, enjoy the DApp! 🎉
+🎉 Once connected, enjoy the DApp! 
 
 ![Increment](counter02.PNG)
 
@@ -124,7 +134,7 @@ http://localhost:3000/
 
 To run the Go server to reset the counter, follow these steps:
 
-1. Run Massa Station locally by following the documentation [here](https://docs.massa.net/docs/massaStation/install).
+1. Run `Massa Station` locally by following the documentation [here](https://docs.massa.net/docs/massaStation/install).
 
 2. Navigate to the Go folder:
 
@@ -151,7 +161,7 @@ go mod tidy
 go run server.go
 ```
 
-6. Test the Reset Endpoint:
+6. Test the `reset` Endpoint:
 
 - Using curl: You can send a POST request directly from your terminal::
 
@@ -167,7 +177,7 @@ Here is the error message that i have at this point :
 
 ![Error Message](server_reset_error.PNG)
 
-6. Test the history Endpoint:
+7. Test the `history` Endpoint:
 
 - Using curl: You can send a POST request directly from your terminal::
 
@@ -186,16 +196,15 @@ This Should display the counter history.
 🔒 Secure Secrets:
 
 Never store your secrets and private keys in plain text on your hard disk. 
-Use .env files and implement the Chainlink env-enc module to encrypt your secrets, or use any other encryption procedure. 
-🎥 Check out [Patrick Collins' video on the topic](https://www.youtube.com/watch?v=CIbhqRJ4B8I).
+Use .env files and implement the Chainlink env-enc module to encrypt your secrets, or use any other encryption procedure. 🎥 Check out [Patrick Collins' video on the topic](https://www.youtube.com/watch?v=CIbhqRJ4B8I).
 
 ✅ More unit tests for better test coverage.
 
-🌐 More interactions with the Go server.
-
 🧩 Improve modularity in Next.js code for better  maintainability.
 
-💳 Massa Wallet Integration.
+💳 Massa Wallet Connexion Integration.
+
+🌐 More interactions with the Go server.
 
 🌱 Integrate updated Dependencies:
 
