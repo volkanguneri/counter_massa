@@ -90,13 +90,15 @@ export default function IncrementCounter() {
       onError,
       5000 // Polling interval in milliseconds
     );
+
     console.log("🚀 ~ initProvider ~ stopPolling:", stopPolling);
 
-    // Continue polling until stopped
+    // // Continue polling until stopped
     // while (!stop) {
     //   await scheduler.wait(5000);
     // }
     // stopPolling();
+
   },[]);
 
   /**
@@ -110,9 +112,13 @@ export default function IncrementCounter() {
    * @dev Listens for new events and updates the counter when events occur.
    */
   useEffect(() => {
+    const asyncEffect = async () => {
       if (events.length > 0) {
         toast.info(events.at(-1)?.data as string); // Show event data in an info toast
+        setCount(await getCount());
       }
+    };
+    asyncEffect();
   }, [events]);
 
   /**
@@ -127,7 +133,7 @@ export default function IncrementCounter() {
         toast.error("Failed to connect to wallet");
         return;
       }
- 
+
       setCount(await getCount());
     }
   }
